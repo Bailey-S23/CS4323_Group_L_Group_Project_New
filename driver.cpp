@@ -28,14 +28,20 @@ vector<string> tokenizer(string lineOfFile)
 
 bool accountExists(string accNum)
 {
-    char *file = accNum.data();
-    struct stat sb;
+
+    ifstream file;
+
+    file.open("Accounts/" + accNum);
+
     bool exists = false;
 
-    if (stat(file, &sb) == 0)
+    if (file)
     {
-        cout << file << " exists" << endl;
         exists = true;
+    }
+    else
+    {
+        exists = false;
     }
 
     return exists;
@@ -77,50 +83,56 @@ int main()
             vector<string> partsOfLine;
 
             partsOfLine = tokenizer(lineOfFile);
+            if (!accountExists(partsOfLine[0]))
+            {
 
-            int command = 7;
+                if (fork() == 0)
+                {
 
-            if (partsOfLine[1] == "Withdraw")
-            {
-                command = 0;
-            }
-            if (partsOfLine[1] == "Create")
-            {
-                command = 1;
-            }
-            if (partsOfLine[1] == "Inquiry")
-            {
-                command = 2;
-            }
-            if (partsOfLine[1] == "Deposit")
-            {
-                command = 3;
-            }
-            if (partsOfLine[1] == "Transfer")
-            {
-                command = 4;
-            }
-            if (partsOfLine[1] == "Close")
-            {
-                command = 5;
-            }
+                    int command = 7;
 
-            switch (command)
-            {
-            case 0:
-            {
-                CreateAccount newAccount = CreateAccount(partsOfLine);
-                break;
-            }
-            case 1:
-            {
-                // do stuff
-                break;
-            }
-            default:
-            {
-                break;
-            }
+                    if (partsOfLine[1] == "Withdraw")
+                    {
+                        command = 0;
+                    }
+                    if (partsOfLine[1] == "Create")
+                    {
+                        command = 1;
+                    }
+                    if (partsOfLine[1] == "Inquiry")
+                    {
+                        command = 2;
+                    }
+                    if (partsOfLine[1] == "Deposit")
+                    {
+                        command = 3;
+                    }
+                    if (partsOfLine[1] == "Transfer")
+                    {
+                        command = 4;
+                    }
+                    if (partsOfLine[1] == "Close")
+                    {
+                        command = 5;
+                    }
+
+                    switch (command)
+                    {
+                    case 0:
+                    {
+                        break;
+                    }
+                    case 1:
+                    {
+                        CreateAccount newAccount = CreateAccount(partsOfLine);
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                    }
+                }
             }
         }
     }
