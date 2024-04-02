@@ -17,6 +17,8 @@ class CreateAccount
 {
 
     public:
+        string accName;
+        int accBalance;
         CreateAccount(vector<string> accountInfo);
 };
 
