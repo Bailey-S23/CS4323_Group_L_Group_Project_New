@@ -20,6 +20,7 @@ class CreateAccount
         string accName;
         int accBalance;
         CreateAccount(vector<string> accountInfo);
+
 };
 
 #endif

@@ -2,15 +2,19 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <fstream>
 #include <string>
 #include <vector>
 #include "CreateAccount.h"
 #include "CreateAccount.cpp"
-
+#include <mutex>
 using namespace std;
 
+mutex mtx;
+
+// This function breaks down lines of file and returns a vector holding each piece as an element
 vector<string> tokenizer(string lineOfFile)
 {
     stringstream sstream(lineOfFile);
@@ -26,6 +30,7 @@ vector<string> tokenizer(string lineOfFile)
     return partsOfLine;
 }
 
+// This function checks to see if a file exists or not
 bool accountExists(string accNum)
 {
 
@@ -37,6 +42,7 @@ bool accountExists(string accNum)
 
     if (file)
     {
+        cout << "File " + accNum + " exists" << endl;
         exists = true;
     }
     else
@@ -50,9 +56,10 @@ bool accountExists(string accNum)
 int main()
 {
 
+    // This block of code creates the directory "Accounts" if it does not exist already
+    //.................................................................................
     const char *dir = "Accounts";
     struct stat sb;
-
     if (stat(dir, &sb) == 0)
     {
         cout << "Directory exists, continuing" << endl;
@@ -68,29 +75,36 @@ int main()
             cout << "Directory created" << endl;
         }
     }
+    //.................................................................................
 
+    // used to read file
     string fileToRead = "InputFile";
     ifstream inputFile(fileToRead);
-
     string lineOfFile;
 
+    // if file is open
     if (inputFile.is_open())
     {
+        // Get int value at top of input file
         getline(inputFile, lineOfFile);
 
+        // read lines of file one at a time until they are all read
         while (getline(inputFile, lineOfFile))
         {
-            vector<string> partsOfLine;
 
+            // take each line of the file break it into its pieces to do stuff with them
+            vector<string> partsOfLine;
             partsOfLine = tokenizer(lineOfFile);
-            if (!accountExists(partsOfLine[0]))
+
+            // check if the file (account) exists
+            if (!accountExists(partsOfLine[0]) && fork() == 0)
             {
 
-                if (fork() == 0)
-                {
-
+                // if the account does not exist, create a child process that does stuff with the new account number
                     int command = 7;
 
+                    // Switch statment below if statements does not work with strings
+                    // int command is set using if statements based on withdraw/create etc to use in switch block
                     if (partsOfLine[1] == "Withdraw")
                     {
                         command = 0;
@@ -120,6 +134,7 @@ int main()
                     {
                     case 0:
                     {
+                        CreateAccount newAccount = CreateAccount(partsOfLine);
                         break;
                     }
                     case 1:
@@ -132,9 +147,13 @@ int main()
                         break;
                     }
                     }
-                }
             }
         }
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        wait(NULL);
     }
 
     return 0;

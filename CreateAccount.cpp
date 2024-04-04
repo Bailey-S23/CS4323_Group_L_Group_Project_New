@@ -2,6 +2,7 @@
 
 CreateAccount::CreateAccount(vector<string> accountInfo)
 {
+
     char *account = accountInfo[0].data();
     struct stat sb;
 
@@ -12,5 +13,6 @@ CreateAccount::CreateAccount(vector<string> accountInfo)
     outfile << accBalance;
     outfile.close();
 
-    cout << accName << endl;
+    cout << "Account Created: " + accName << endl;
+
 }
