@@ -15,6 +15,14 @@
 using namespace std;
 
 
+
+/*
+The memoryModule will be updated or changed. As of now some code showing memory mapping is being tested
+int the CreateAccount class. It needs more work, and needs to be moved to the memoryModule class where
+the other classes like CreateAccount, Withdraw, etc should be called from.
+*/
+
+
 class memoryModule
 {
     public:
