@@ -10,9 +10,19 @@
 #include "CreateAccount.h"
 #include "CreateAccount.cpp"
 #include <mutex>
+#include <sys/mman.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <fcntl.h>
+
 using namespace std;
 
-mutex mtx;
+#define PAGESIZE 4096
+
+void *createSharedMemory()
+{
+    return mmap(NULL, PAGESIZE, PROT_READ | PROT_WRITE, MAP_SHARED, -1, 0);
+}
 
 // This function breaks down lines of file and returns a vector holding each piece as an element
 vector<string> tokenizer(string lineOfFile)
@@ -56,6 +66,7 @@ bool accountExists(string accNum)
 int main()
 {
 
+    void *sharedMemory = createSharedMemory();
     // This block of code creates the directory "Accounts" if it does not exist already
     //.................................................................................
     const char *dir = "Accounts";
@@ -76,6 +87,8 @@ int main()
         }
     }
     //.................................................................................
+
+
 
     // used to read file
     string fileToRead = "InputFile";
@@ -101,52 +114,54 @@ int main()
             {
 
                 // if the account does not exist, create a child process that does stuff with the new account number
-                    int command = 7;
+                int command = 7;
 
-                    // Switch statment below if statements does not work with strings
-                    // int command is set using if statements based on withdraw/create etc to use in switch block
-                    if (partsOfLine[1] == "Withdraw")
-                    {
-                        command = 0;
-                    }
-                    if (partsOfLine[1] == "Create")
-                    {
-                        command = 1;
-                    }
-                    if (partsOfLine[1] == "Inquiry")
-                    {
-                        command = 2;
-                    }
-                    if (partsOfLine[1] == "Deposit")
-                    {
-                        command = 3;
-                    }
-                    if (partsOfLine[1] == "Transfer")
-                    {
-                        command = 4;
-                    }
-                    if (partsOfLine[1] == "Close")
-                    {
-                        command = 5;
-                    }
+                // Switch statment below if statements does not work with strings
+                // int command is set using if statements based on withdraw/create etc to use in switch block
+                if (partsOfLine[1] == "Withdraw")
+                {
+                    command = 0;
+                }
+                if (partsOfLine[1] == "Create")
+                {
+                    command = 1;
+                }
+                if (partsOfLine[1] == "Inquiry")
+                {
+                    command = 2;
+                }
+                if (partsOfLine[1] == "Deposit")
+                {
+                    command = 3;
+                }
+                if (partsOfLine[1] == "Transfer")
+                {
+                    command = 4;
+                }
+                if (partsOfLine[1] == "Close")
+                {
+                    command = 5;
+                }
 
-                    switch (command)
-                    {
-                    case 0:
-                    {
-                        CreateAccount newAccount = CreateAccount(partsOfLine);
-                        break;
-                    }
-                    case 1:
-                    {
-                        CreateAccount newAccount = CreateAccount(partsOfLine);
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                    }
+                switch (command)
+                {
+                case 0:
+                {
+                    CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
+                    break;
+                }
+                case 1:
+                {
+                    CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+                }
+                pid_t PID = getpid();
+                kill(PID, SIGKILL);
             }
         }
     }

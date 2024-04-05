@@ -19,8 +19,8 @@ class CreateAccount
     public:
         string accName;
         int accBalance;
+        CreateAccount(vector<string> accountInfo, void* sharedMemory);
         CreateAccount(vector<string> accountInfo);
-
 };
 
 #endif
