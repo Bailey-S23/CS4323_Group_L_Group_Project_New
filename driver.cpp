@@ -66,7 +66,9 @@ bool accountExists(string accNum)
 int main()
 {
 
+    // Create pointer to shared memory
     void *sharedMemory = createSharedMemory();
+
     // This block of code creates the directory "Accounts" if it does not exist already
     //.................................................................................
     const char *dir = "Accounts";
@@ -88,8 +90,6 @@ int main()
     }
     //.................................................................................
 
-
-
     // used to read file
     string fileToRead = "InputFile";
     ifstream inputFile(fileToRead);
@@ -108,6 +108,15 @@ int main()
             // take each line of the file break it into its pieces to do stuff with them
             vector<string> partsOfLine;
             partsOfLine = tokenizer(lineOfFile);
+
+
+            /********************************************************************************
+            code needs additional statements to handle input for files that already exist.
+            Existing code only handles account numbers that it has not previously encountered.
+            This code will be passed to the other classes in the same way, as a vector containing
+            the individual pieces of a line and a pointer to the shared memory
+            *********************************************************************************/
+
 
             // check if the file (account) exists
             if (!accountExists(partsOfLine[0]) && fork() == 0)
@@ -155,21 +164,109 @@ int main()
                     CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
                     break;
                 }
-                default:
+                case 2:
                 {
+                    // add code for inquiry class
+                    break;
+                }
+                case 3:
+                {
+                    // add code for deposit class
+                    break;
+                }
+                case 4:
+                {
+                    // add code for transfer class
+                    break;
+                }
+                case 5:
+                {
+                    // add code for close class
                     break;
                 }
                 }
+
+                // cheat code since syncronization is not currently in place
                 pid_t PID = getpid();
                 kill(PID, SIGKILL);
             }
+            
+            // Needs to be refined, code to execute if account exists (withdraw from existing account, etc)
+            else if (accountExists(partsOfLine[0]))
+            {
+
+                // if the account does not exist, create a child process that does stuff with the new account number
+                int command = 7;
+
+                // Switch statment below if statements does not work with strings
+                // int command is set using if statements based on withdraw/create etc to use in switch block
+                if (partsOfLine[1] == "Withdraw")
+                {
+                    command = 0;
+                }
+                if (partsOfLine[1] == "Create")
+                {
+                    command = 1;
+                }
+                if (partsOfLine[1] == "Inquiry")
+                {
+                    command = 2;
+                }
+                if (partsOfLine[1] == "Deposit")
+                {
+                    command = 3;
+                }
+                if (partsOfLine[1] == "Transfer")
+                {
+                    command = 4;
+                }
+                if (partsOfLine[1] == "Close")
+                {
+                    command = 5;
+                }
+
+                switch (command)
+                {
+                case 0:
+                {
+                    // Add code for withdraw class
+                    break;
+                }
+                case 1:
+                {
+                    // handle create for account that exists
+                    break;
+                }
+                case 2:
+                {
+                    // add code for inquiry class
+                    break;
+                }
+                case 3:
+                {
+                    // add code for deposit class
+                    break;
+                }
+                case 4:
+                {
+                    // add code for transfer class
+                    break;
+                }
+                case 5:
+                {
+                    // add code for close class
+                    break;
+                }
+
+                }
+            }
         }
-    }
 
-    for (int i = 0; i < 3; i++)
-    {
-        wait(NULL);
-    }
+        for (int i = 0; i < 3; i++)
+        {
+            wait(NULL);
+        }
 
-    return 0;
+        return 0;
+    }
 }
