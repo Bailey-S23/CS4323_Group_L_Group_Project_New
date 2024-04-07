@@ -1,11 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <thread>
 #include <vector>
 #include <unordered_map>
 #include <mutex>
-#include <chrono> // For sleep in demonstration
+#include <thread>
+#include <condition_variable>
 
 // Define a struct to represent a transaction
 struct Transaction {
@@ -16,9 +16,9 @@ struct Transaction {
 };
 
 // Function to process a single transaction
-void processTransaction(const Transaction& transaction, std::mutex& mtx, std::unordered_map<std::string, double>& accountBalances) {
+void processTransaction(const Transaction& transaction, std::mutex& mtx, std::unordered_map<std::string, double>& accountBalances, std::condition_variable& cv) {
     // Acquire the lock to ensure synchronized access
-    std::lock_guard<std::mutex> lock(mtx);
+    std::unique_lock<std::mutex> lock(mtx);
 
     // Perform the transaction based on its type
     if (transaction.type == "Withdraw") {
@@ -38,7 +38,8 @@ void processTransaction(const Transaction& transaction, std::mutex& mtx, std::un
             std::cerr << "Account " << transaction.accNum << " already exists" << std::endl;
         }
     } else if (transaction.type == "Inquiry") {
-        // Do nothing for inquiry
+        // Print account balance
+        std::cout << "Account " << transaction.accNum << " balance: $" << accountBalances[transaction.accNum] << std::endl;
     } else if (transaction.type == "Deposit") {
         accountBalances[transaction.accNum] += transaction.amount;
     } else if (transaction.type == "Transfer") {
@@ -56,6 +57,9 @@ void processTransaction(const Transaction& transaction, std::mutex& mtx, std::un
     } else if (transaction.type == "Close") {
         accountBalances.erase(transaction.accNum);
     }
+
+    // Notify the main thread that transaction is complete
+    cv.notify_all();
 }
 
 int main() {
@@ -69,9 +73,14 @@ int main() {
         return 1;
     }
 
-    // Process transactions for each user
+    // Read the number of transactions
+    int numTransactions;
+    inputFile >> numTransactions;
+
+    // Read transactions from the input file
+    std::vector<Transaction> transactions;
     std::string line;
-    std::mutex mtx; // Mutex for synchronization
+    std::getline(inputFile, line); // Consume the newline character
     while (std::getline(inputFile, line)) {
         std::istringstream iss(line);
         Transaction transaction;
@@ -80,27 +89,43 @@ int main() {
                 transaction.type == "Transfer") {
                 // Extract the transaction amount
                 iss >> transaction.amount;
-            } else if (transaction.type == "Create") {
-                // Extract the initial deposit amount
-                iss >> transaction.amount;
             } else if (transaction.type == "Transfer") {
                 // Extract the transfer amount and recipient account number
                 iss >> transaction.amount >> transaction.recipientAccNum;
             }
 
-            // Process the transaction in a separate thread
-            std::thread t(processTransaction, transaction, std::ref(mtx), std::ref(accountBalances));
-            t.join(); // Join the thread to ensure sequential processing
+            // Add the transaction to the vector
+            transactions.push_back(transaction);
         }
     }
 
     // Close the input file
     inputFile.close();
 
-    // Print account balances
+    // Create a mutex for synchronization
+    std::mutex mtx;
+
+    // Create a condition variable for synchronization
+    std::condition_variable cv;
+
+    // Create a vector to hold threads
+    std::vector<std::thread> threads;
+
+    // Run transactions in a thread pool
+    for (const auto& transaction : transactions) {
+        // Create a thread for each transaction
+        threads.emplace_back(processTransaction, std::cref(transaction), std::ref(mtx), std::ref(accountBalances), std::ref(cv));
+    }
+
+    // Wait for all transactions to complete
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    // Print final account balances
     std::cout << "Final account balances:" << std::endl;
     for (const auto& pair : accountBalances) {
-        std::cout << "Account " << pair.first << ": $" << pair.second << std::endl;
+        std::cout << "Account " << pair.first << " balance: $" << pair.second << std::endl;
     }
 
     return 0;
