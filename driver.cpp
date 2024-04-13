@@ -14,22 +14,23 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <fcntl.h>
+#include "UserAccounts.h"
+#include "UserAccounts.cpp"
+#include "memoryModule.h"
+#include "memoryModule.cpp"
 
 using namespace std;
 
 #define PAGESIZE 4096
 
-void *createSharedMemory()
-{
-    return mmap(NULL, PAGESIZE, PROT_READ | PROT_WRITE, MAP_SHARED, -1, 0);
-}
+
+
 
 // This function breaks down lines of file and returns a vector holding each piece as an element
-vector<string> tokenizer(string lineOfFile)
+vector<string> tokenize(string lineOfFile)
 {
     stringstream sstream(lineOfFile);
     string singleString;
-
     vector<string> partsOfLine;
 
     while (sstream >> singleString)
@@ -39,6 +40,7 @@ vector<string> tokenizer(string lineOfFile)
 
     return partsOfLine;
 }
+
 
 // This function checks to see if a file exists or not
 bool accountExists(string accNum)
@@ -52,7 +54,6 @@ bool accountExists(string accNum)
 
     if (file)
     {
-        cout << "File " + accNum + " exists" << endl;
         exists = true;
     }
     else
@@ -63,11 +64,20 @@ bool accountExists(string accNum)
     return exists;
 }
 
+int checkForAccountInVector(vector<UserAccounts> accountVector, string accountName)
+{
+    for (int i = 0; i < accountVector.size(); i++)
+    {
+        if (accountName == accountVector[i].accountNumber)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int main()
 {
-
-    // Create pointer to shared memory
-    void *sharedMemory = createSharedMemory();
 
     // This block of code creates the directory "Accounts" if it does not exist already
     //.................................................................................
@@ -95,11 +105,19 @@ int main()
     ifstream inputFile(fileToRead);
     string lineOfFile;
 
+    int numOfUsers;
+
+    vector<UserAccounts> accountVector;
+
     // if file is open
     if (inputFile.is_open())
     {
         // Get int value at top of input file
+        cout << "Start" << endl;
+
         getline(inputFile, lineOfFile);
+
+        numOfUsers = stoi(lineOfFile);
 
         // read lines of file one at a time until they are all read
         while (getline(inputFile, lineOfFile))
@@ -107,166 +125,59 @@ int main()
 
             // take each line of the file break it into its pieces to do stuff with them
             vector<string> partsOfLine;
-            partsOfLine = tokenizer(lineOfFile);
+            partsOfLine = tokenize(lineOfFile);
 
-
-            /********************************************************************************
-            code needs additional statements to handle input for files that already exist.
-            Existing code only handles account numbers that it has not previously encountered.
-            This code will be passed to the other classes in the same way, as a vector containing
-            the individual pieces of a line and a pointer to the shared memory
-            *********************************************************************************/
-
-
-            // check if the file (account) exists
-            if (!accountExists(partsOfLine[0]) && fork() == 0)
+            if (accountVector.empty() == true)
             {
-
-                // if the account does not exist, create a child process that does stuff with the new account number
-                int command = 7;
-
-                // Switch statment below if statements does not work with strings
-                // int command is set using if statements based on withdraw/create etc to use in switch block
-                if (partsOfLine[1] == "Withdraw")
-                {
-                    command = 0;
-                }
-                if (partsOfLine[1] == "Create")
-                {
-                    command = 1;
-                }
-                if (partsOfLine[1] == "Inquiry")
-                {
-                    command = 2;
-                }
-                if (partsOfLine[1] == "Deposit")
-                {
-                    command = 3;
-                }
-                if (partsOfLine[1] == "Transfer")
-                {
-                    command = 4;
-                }
-                if (partsOfLine[1] == "Close")
-                {
-                    command = 5;
-                }
-
-                switch (command)
-                {
-                case 0:
-                {
-                    CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
-                    break;
-                }
-                case 1:
-                {
-                    CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
-                    break;
-                }
-                case 2:
-                {
-                    // add code for inquiry class
-                    break;
-                }
-                case 3:
-                {
-                    // add code for deposit class
-                    break;
-                }
-                case 4:
-                {
-                    // add code for transfer class
-                    break;
-                }
-                case 5:
-                {
-                    // add code for close class
-                    break;
-                }
-                }
-
-                // cheat code since syncronization is not currently in place
-                pid_t PID = getpid();
-                kill(PID, SIGKILL);
+                UserAccounts newAccount = UserAccounts(partsOfLine[0]);
+                newAccount.operationVector.push_back(partsOfLine);
+                newAccount.operations.push_back(lineOfFile);
+                accountVector.push_back(newAccount);
             }
-            
-            // Needs to be refined, code to execute if account exists (withdraw from existing account, etc)
-            else if (accountExists(partsOfLine[0]))
+            else if (checkForAccountInVector(accountVector, partsOfLine[0]) != -1)
             {
+                int i = checkForAccountInVector(accountVector, partsOfLine[0]);
 
-                // if the account does not exist, create a child process that does stuff with the new account number
-                int command = 7;
-
-                // Switch statment below if statements does not work with strings
-                // int command is set using if statements based on withdraw/create etc to use in switch block
-                if (partsOfLine[1] == "Withdraw")
-                {
-                    command = 0;
-                }
-                if (partsOfLine[1] == "Create")
-                {
-                    command = 1;
-                }
-                if (partsOfLine[1] == "Inquiry")
-                {
-                    command = 2;
-                }
-                if (partsOfLine[1] == "Deposit")
-                {
-                    command = 3;
-                }
-                if (partsOfLine[1] == "Transfer")
-                {
-                    command = 4;
-                }
-                if (partsOfLine[1] == "Close")
-                {
-                    command = 5;
-                }
-
-                switch (command)
-                {
-                case 0:
-                {
-                    // Add code for withdraw class
-                    break;
-                }
-                case 1:
-                {
-                    // handle create for account that exists
-                    break;
-                }
-                case 2:
-                {
-                    // add code for inquiry class
-                    break;
-                }
-                case 3:
-                {
-                    // add code for deposit class
-                    break;
-                }
-                case 4:
-                {
-                    // add code for transfer class
-                    break;
-                }
-                case 5:
-                {
-                    // add code for close class
-                    break;
-                }
-
-                }
+                accountVector[i].operationVector.push_back(partsOfLine);
+                accountVector[i].operations.push_back(lineOfFile);
+            }
+            else
+            {
+                UserAccounts newAccount2 = UserAccounts(partsOfLine[0]);
+                newAccount2.operationVector.push_back(partsOfLine);
+                newAccount2.operations.push_back(lineOfFile);
+                accountVector.push_back(newAccount2);
             }
         }
-
-        for (int i = 0; i < 3; i++)
-        {
-            wait(NULL);
-        }
-
-        return 0;
     }
+
+    memoryModule memory = memoryModule(accountVector, numOfUsers);
+
+/*
+    for (int i = 0; i < accountVector.size(); i++)
+    {
+        for (int k = 0; k < accountVector[i].operationVector.size(); k++)
+        {
+            vector<string> line = accountVector[i].operationVector[k];
+            for (int j = 0; j < line.size(); j++)
+            {
+                cout << line[j] << endl;
+            }
+        }
+        cout << "----" << endl;
+    }
+
+    cout << "===============================" << endl;
+
+    for (int i = 0; i < accountVector.size(); i++)
+    {
+        for (int k = 0; k < accountVector[i].operations.size(); k++)
+        {
+            string line = accountVector[i].operations[k];
+            cout << line << endl;
+        }
+    }
+
+    */
+    return 0;
 }
