@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #include "CreateAccount.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>

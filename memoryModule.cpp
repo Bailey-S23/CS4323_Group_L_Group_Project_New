@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #include "memoryModule.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>

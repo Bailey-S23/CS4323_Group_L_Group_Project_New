@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #ifndef CREATEACCOUNT_H
 #define CREATEACCOUNT_H
 
