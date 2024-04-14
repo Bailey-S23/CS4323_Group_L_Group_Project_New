@@ -1,7 +1,4 @@
-// take in account1, moneyValue, and account2
-// if account1Total < moneyValue, STOP
-// withdraw moneyValue from account1
-// deposit moneyValue in account2
+// Author: Caleb Sullard
 
 #include "transfer.h"
 #include <iostream>
