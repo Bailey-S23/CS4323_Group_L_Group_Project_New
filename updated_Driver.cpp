@@ -196,6 +196,7 @@ int main(int argc, char* argv[])
                 case 4:
                 {
                     // add code for transfer class
+                    Transfer transferTransaction(partsOfLine, sharedMemory);
                     break;
                 }
                 case 5:
