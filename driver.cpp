@@ -1,4 +1,6 @@
-// Author: Bailey Schultz
+// Group L
+// Main Author: Bailey Schultz
+// Co Authors: Zach Wilson, Calleb Sullard, Katie Pinell
 
 #include <bits/stdc++.h>
 #include <iostream>
@@ -21,14 +23,9 @@
 #include "memoryModule.h"
 #include "memoryModule.cpp"
 
-
-
 using namespace std;
 
 #define PAGESIZE 4096
-
-
-
 
 // This function breaks down lines of file and returns a vector holding each piece as an element
 vector<string> tokenize(string lineOfFile)
@@ -44,7 +41,6 @@ vector<string> tokenize(string lineOfFile)
 
     return partsOfLine;
 }
-
 
 // This function checks to see if a file exists or not
 bool accountExists(string accNum)
@@ -127,10 +123,11 @@ int main()
         while (getline(inputFile, lineOfFile))
         {
 
-            // take each line of the file break it into its pieces to do stuff with them
+            // take each line of the file break it into its pieces
             vector<string> partsOfLine;
             partsOfLine = tokenize(lineOfFile);
 
+            // Create accounts and add operations for each account into vector associated with that account
             if (accountVector.empty() == true)
             {
                 UserAccounts newAccount = UserAccounts(partsOfLine[0]);
@@ -155,33 +152,34 @@ int main()
         }
     }
 
+// Pass user accounts and number of user accounts to memoryModule
     memoryModule memory = memoryModule(accountVector, numOfUsers);
 
-/*
-    for (int i = 0; i < accountVector.size(); i++)
-    {
-        for (int k = 0; k < accountVector[i].operationVector.size(); k++)
+    /*
+        for (int i = 0; i < accountVector.size(); i++)
         {
-            vector<string> line = accountVector[i].operationVector[k];
-            for (int j = 0; j < line.size(); j++)
+            for (int k = 0; k < accountVector[i].operationVector.size(); k++)
             {
-                cout << line[j] << endl;
+                vector<string> line = accountVector[i].operationVector[k];
+                for (int j = 0; j < line.size(); j++)
+                {
+                    cout << line[j] << endl;
+                }
+            }
+            cout << "----" << endl;
+        }
+
+        cout << "===============================" << endl;
+
+        for (int i = 0; i < accountVector.size(); i++)
+        {
+            for (int k = 0; k < accountVector[i].operations.size(); k++)
+            {
+                string line = accountVector[i].operations[k];
+                cout << line << endl;
             }
         }
-        cout << "----" << endl;
-    }
 
-    cout << "===============================" << endl;
-
-    for (int i = 0; i < accountVector.size(); i++)
-    {
-        for (int k = 0; k < accountVector[i].operations.size(); k++)
-        {
-            string line = accountVector[i].operations[k];
-            cout << line << endl;
-        }
-    }
-
-    */
+        */
     return 0;
 }

@@ -42,6 +42,7 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 }
 */
 
+// Constructor that creates new account files
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
     accBalance = stoi(accountInfo[2].data());

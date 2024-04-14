@@ -23,14 +23,9 @@
 
 using namespace std;
 
-/*
-The memoryModule will be updated or changed. As of now some code showing memory mapping is being tested
-int the CreateAccount class. It needs more work, and needs to be moved to the memoryModule class where
-the other classes like CreateAccount, Withdraw, etc should be called from.
-*/
-
 void *sharedMemory = mmap(0, 1024, PROT_READ, MAP_SHARED, -1, 0);
 
+// Turn line from input file into vector of individual pieces
 vector<string> tokenizer(string lineOfFile)
 {
     stringstream sstream(lineOfFile);
@@ -46,6 +41,7 @@ vector<string> tokenizer(string lineOfFile)
     return partsOfLine;
 }
 
+// Check if file exists
 bool accountExistsMem(string accNum)
 {
 
@@ -68,6 +64,7 @@ bool accountExistsMem(string accNum)
     return exists;
 }
 
+// Handle operations from input file
 void operations(UserAccounts account, sem_t **allSems, int processNum)
 {
 
@@ -78,7 +75,7 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         // if the account does not exist, create a child process that does stuff with the new account number
         int command = 7;
 
-        // Switch statment below if statements does not work with strings
+        // Switch statment below, switch statements do not work with strings
         // int command is set using if statements based on withdraw/create etc to use in switch block
         if (partsOfLine[1] == "Withdraw")
         {
@@ -110,8 +107,7 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         case 0:
         {
 
-            cout << "No Account exists, invalid transaction attempt" << endl;
-
+            Withdraw(partsOfLine, sharedMemory);
             break;
         }
         case 1:
@@ -150,14 +146,18 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         }
         case 5:
         {
+            sem_wait(allSems[processNum]);
             CloseAccount closeAccount = CloseAccount(partsOfLine);
+            sem_post(allSems[processNum]);
+
             break;
         }
         }
     }
 }
 
-// This function checks to see if a file exists or not
+// Create shared memory for semaphores and files, and spawns child processes
+// Needs to be updated. Does not control syncronization
 void createMemory(vector<UserAccounts> accounts, int processCount)
 {
     pid_t pid = -1;
@@ -207,6 +207,7 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
     }
 }
 
+// Constructor, calls create memory with user accounts from driver
 memoryModule::memoryModule(vector<UserAccounts> accounts, int processCount)
 {
     createMemory(accounts, processCount);
