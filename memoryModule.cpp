@@ -12,6 +12,10 @@
 #include <semaphore.h>
 #include "Deposit.h"
 #include "Deposit.cpp"
+#include "Withdraw.h"
+#include "Withdraw.cpp"
+#include "CloseAccount.h"
+#include "CloseAccount.cpp"
 
 /*
 The memoryModule will be updated or changed. As of now some code showing memory mapping is being tested
@@ -137,17 +141,14 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         }
         case 5:
         {
-            // add code for close class
+            CloseAccount(partsOfLine);
             break;
         }
         }
     }
 }
 
-// cheat code since syncronization is not currently in place
-
 // This function checks to see if a file exists or not
-
 void createMemory(vector<UserAccounts> accounts, int processCount)
 {
     pid_t pid = -1;
@@ -199,6 +200,5 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
 
 memoryModule::memoryModule(vector<UserAccounts> accounts, int processCount)
 {
-
     createMemory(accounts, processCount);
 }
