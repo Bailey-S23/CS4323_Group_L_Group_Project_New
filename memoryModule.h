@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #ifndef MEMORYMODULE_H
 #define MEMORYMODULE_H
 

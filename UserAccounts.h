@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #ifndef USERACCOUNTS_H
 #define USERACCOUNTS_H
 

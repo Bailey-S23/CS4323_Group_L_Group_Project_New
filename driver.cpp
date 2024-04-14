@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #include <bits/stdc++.h>
 #include <iostream>
 #include <sys/stat.h>
