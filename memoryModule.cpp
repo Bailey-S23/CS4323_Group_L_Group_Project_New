@@ -18,6 +18,8 @@
 #include "Withdraw.cpp"
 #include "CloseAccount.h"
 #include "CloseAccount.cpp"
+#include "TransferTo.h"
+#include "TransferTo.cpp"
 
 using namespace std;
 
@@ -133,7 +135,7 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         case 3:
         {
             // add code for deposit class
-            sen_wait(allSems[processNum]);
+            sem_wait(allSems[processNum]);
             Deposit(partsOfLine, sharedMemory);
             sem_post(allSems[processNum]);
             break;
@@ -142,7 +144,7 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         {
             // add code for transfer class
             sem_wait(allSems[processNum]);
-            Transfer(partsOfLine, sharedMemory);
+            TransferTo transfer = TransferTo(partsOfLine, sharedMemory);
             sem_post(allSems[processNum]);
             break;
         }
