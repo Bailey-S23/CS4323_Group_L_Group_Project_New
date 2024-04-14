@@ -1,3 +1,8 @@
+/* Author Name: Zach  Wilson
+    Email: stealth.wilson@okstate.edu
+    Date: 04/14/2024
+    Deposit function to deposit money into account*/
+
 #include "Deposit.h"  // Include the header to get the class definition
 #include <iostream>
 #include <fstream>
