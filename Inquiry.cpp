@@ -1,3 +1,8 @@
+/* Author Name: Zach  Wilson
+    Email: stealth.wilson@okstate.edu
+    Date: 04/14/2024
+    Inquire function to read current value of acccounts*/
+
 #include "Inquiry.h"
 #include <iostream>
 #include <fstream>
