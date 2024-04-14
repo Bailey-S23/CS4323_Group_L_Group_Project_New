@@ -1,3 +1,8 @@
+/* Author Name: Zach  Wilson
+    Email: stealth.wilson@okstate.edu
+    Date: 04/14/2024
+   Deposit header file holding deposit class definition */
+
 #ifndef DEPOSIT_H
 #define DEPOSIT_H
 
