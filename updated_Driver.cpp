@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
                 {
                 case 0:
                 {
-                    // Add code for withdraw class
+                    Withdraw withdrawal = Withdraw(partsOfLine, sharedMemory);
                     break;
                 }
                 case 1:
@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
                 }
                 case 5:
                 {
-                    // add code for close class
+                    CloseAccount closedAccount = CloseAccount(partsOfLine);
                     break;
                 }
 
