@@ -9,6 +9,8 @@
 #include <vector>
 #include "CreateAccount.h"
 #include "CreateAccount.cpp"
+#include "CloseAccount.h"
+#include "Withdraw.h"
 #include <mutex>
 #include <sys/mman.h>
 #include <sys/ipc.h>
@@ -156,7 +158,7 @@ int main()
                 {
                 case 0:
                 {
-                    CreateAccount newAccount = CreateAccount(partsOfLine, sharedMemory);
+                    Withdraw withdrawal = Withdraw(partsOfLine, sharedMemory);
                     break;
                 }
                 case 1:
@@ -181,7 +183,7 @@ int main()
                 }
                 case 5:
                 {
-                    // add code for close class
+                    CloseAccount closedAccount = CloseAccount(partsOfLine);
                     break;
                 }
                 }

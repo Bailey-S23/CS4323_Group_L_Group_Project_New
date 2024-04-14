@@ -10,7 +10,7 @@
 
 using namespace std;
 
-trasnfer::transfer(vector<string> transactionDetails, void* sharedMemory) {
+transfer::transfer(vector<string> transactionDetails, void* sharedMemory) {
     if (transactionDetails.size() < 4) {
         cerr << "Invalid transaction details for transfer." << endl;
         return;
@@ -20,7 +20,7 @@ trasnfer::transfer(vector<string> transactionDetails, void* sharedMemory) {
     double amount = stod(transactionDetails[2]);
     string depositAccount = transactionDetails[3];
 
-    transferAmount(withdrawAccount, amount, depositAmount);
+    transferAmount(withdrawAccount, amount, depositAccount);
 }
 
 void transfer::transferAmount(string withdrawAccount, double amount, string depositAccount) {
@@ -52,7 +52,7 @@ void transfer::transferAmount(string withdrawAccount, double amount, string depo
     if (withdrawAccountBalance < amount) {
         withdrawAccountFile.close();
         depositAccountFile.close();
-        cerr << withdrawAccount << " has insufficent funds for withdrawl." << endl;
+        cerr << withdrawAccount << " has insufficent funds for withdrawal." << endl;
         return;
     }
     else {
@@ -64,7 +64,7 @@ void transfer::transferAmount(string withdrawAccount, double amount, string depo
         depositAccountFile << depositAccountBalance;
     }
     
-    cout << "Transfer of " << amount << " from account " << " withdrawAccount " << " to account " << depositAccount << " successful." << endl;
+    cout << "Transfer of " << amount << " from account " << withdrawAccount << " to account " << depositAccount << " successful." << endl;
     cout << "New balance of " << withdrawAccount << ": " << withdrawAccountBalance << endl;
     cout << "New balance of " << depositAccount << ": " << depositAccountBalance << endl;
     
