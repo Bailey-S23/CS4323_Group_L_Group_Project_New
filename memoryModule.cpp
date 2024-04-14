@@ -137,6 +137,9 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         case 4:
         {
             // add code for transfer class
+            sem_wait(allSems[processNum]);
+            Transfer(partsOfLine, sharedMemory);
+            sem_post(allSems[processNum]);
             break;
         }
         case 5:
