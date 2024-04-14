@@ -131,16 +131,17 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         case 3:
         {
             // add code for deposit class
+            sen_wait(allSems[processNum]);
             Deposit(partsOfLine, sharedMemory);
+            sem_post(allSems[processNum]);
             break;
         }
         case 4:
         {
             // add code for transfer class
             sem_wait(allSems[processNum]);
-
+            Transfer(partsOfLine, sharedMemory);
             sem_post(allSems[processNum]);
-
             break;
         }
         case 5:
