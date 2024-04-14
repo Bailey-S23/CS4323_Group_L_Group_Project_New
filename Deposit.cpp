@@ -7,6 +7,7 @@
 #include <iomanip> 
 
 using namespace std;
+
 mutex Deposit::mtx;
 
 Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory) {

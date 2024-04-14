@@ -17,6 +17,8 @@
 #include "CloseAccount.h"
 #include "CloseAccount.cpp"
 
+using namespace std;
+
 /*
 The memoryModule will be updated or changed. As of now some code showing memory mapping is being tested
 int the CreateAccount class. It needs more work, and needs to be moved to the memoryModule class where
@@ -129,19 +131,21 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
         case 3:
         {
             // add code for deposit class
-            sem_wait(allSems[processNum]);
             Deposit(partsOfLine, sharedMemory);
-            sem_post(allSems[processNum]);
             break;
         }
         case 4:
         {
             // add code for transfer class
+            sem_wait(allSems[processNum]);
+
+            sem_post(allSems[processNum]);
+
             break;
         }
         case 5:
         {
-            CloseAccount(partsOfLine);
+            CloseAccount closeAccount = CloseAccount(partsOfLine);
             break;
         }
         }
