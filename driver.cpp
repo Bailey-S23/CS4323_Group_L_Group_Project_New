@@ -155,31 +155,36 @@ int main()
 // Pass user accounts and number of user accounts to memoryModule
     memoryModule memory = memoryModule(accountVector, numOfUsers);
 
-    /*
-        for (int i = 0; i < accountVector.size(); i++)
-        {
-            for (int k = 0; k < accountVector[i].operationVector.size(); k++)
+    for (int i = 0; i < numOfUsers; i++)
+    {
+        wait(NULL);
+    }
+
+        /*
+            for (int i = 0; i < accountVector.size(); i++)
             {
-                vector<string> line = accountVector[i].operationVector[k];
-                for (int j = 0; j < line.size(); j++)
+                for (int k = 0; k < accountVector[i].operationVector.size(); k++)
                 {
-                    cout << line[j] << endl;
+                    vector<string> line = accountVector[i].operationVector[k];
+                    for (int j = 0; j < line.size(); j++)
+                    {
+                        cout << line[j] << endl;
+                    }
+                }
+                cout << "----" << endl;
+            }
+
+            cout << "===============================" << endl;
+
+            for (int i = 0; i < accountVector.size(); i++)
+            {
+                for (int k = 0; k < accountVector[i].operations.size(); k++)
+                {
+                    string line = accountVector[i].operations[k];
+                    cout << line << endl;
                 }
             }
-            cout << "----" << endl;
-        }
 
-        cout << "===============================" << endl;
-
-        for (int i = 0; i < accountVector.size(); i++)
-        {
-            for (int k = 0; k < accountVector[i].operations.size(); k++)
-            {
-                string line = accountVector[i].operations[k];
-                cout << line << endl;
-            }
-        }
-
-        */
-    return 0;
+            */
+        return 0;
 }
