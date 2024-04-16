@@ -11,7 +11,6 @@ class CloseAccount
 
     public:
         string accName;
-        CloseAccount(const vector<string>& accountInfo);
         CloseAccount(vector<string> accountInfo);
 };
 
