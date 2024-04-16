@@ -5,8 +5,9 @@
 
 using namespace std;
 
-CloseAccount::CloseAccount(const vector<string>& accountInfo)
+CloseAccount::CloseAccount(vector<string> accountInfo)
 {
+
     // Get the account name from the account info
     string accName = accountInfo[0];
 
@@ -20,7 +21,9 @@ CloseAccount::CloseAccount(const vector<string>& accountInfo)
     if (accountDeleted != 0)
     {
         cout << "Error deleting account: " + accName << endl;
-    } else  // The account was successfully deleted
+    }
+    else // The account was successfully deleted
     {
         cout << "Account deleted: " + accName << endl;
+    }
 }

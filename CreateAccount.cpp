@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #include "CreateAccount.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -7,6 +9,7 @@
 #include <sys/shm.h>
 #include <fcntl.h>
 
+/*
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
 
@@ -17,7 +20,7 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
     const char *account = temp.data();
     struct stat sb;
 
-    
+
 
     ofstream outfile("Accounts/" + accName);
     outfile << accBalance;
@@ -37,7 +40,23 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 
     cout << "Account Created: " + accName << endl;
 }
+*/
 
-CreateAccount::CreateAccount(vector<string> accountInfo)
+// Constructor that creates new account files
+CreateAccount::CreateAccount(vector<string> accountInfo, void* sharedMemory)
 {
+
+    accBalance = stoi(accountInfo[2].data());
+    string accName = accountInfo[0];
+
+    string temp = "Accounts/" + accountInfo[0];
+
+    struct stat sb;
+
+    ofstream outfile("Accounts/" + accName);
+    outfile << accBalance;
+
+    outfile.close();
+
+    cout << "------------------Account Created: " + accName << endl;
 }

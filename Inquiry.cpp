@@ -14,7 +14,7 @@ Inquiry::Inquiry(const vector<string>& transactionDetails, void* sharedMemory) {
     inquireBalance(accountNumber); // Now correctly declared in Inquiry.h
 }
 
-void Inquiry::inquireBalance(const string& accNum) {
+void Inquiry::inquireBalance(const string accNum) {
     string filePath = "Accounts/" + accNum;
 
     ifstream accountFile(filePath);

@@ -1,3 +1,5 @@
+// Author: Bailey Schultz
+
 #ifndef MEMORYMODULE_H
 #define MEMORYMODULE_H
 
@@ -26,9 +28,12 @@ the other classes like CreateAccount, Withdraw, etc should be called from.
 class memoryModule
 {
     public:
-        memoryModule(vector<string> partsOfLine);
+        memoryModule(vector<UserAccounts> accounts, int processCount);
         vector<string> tokenizer(string lineOfFile);
         bool accountExists(string accNum);
+        
+        
+
 };
 
 #endif

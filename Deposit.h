@@ -12,6 +12,7 @@ public:
 
 private:
     void depositAmount(std::string accNum, double amount);
+    static mutex mtx;  // Make mutex a class static member if sharing across instances
 };
 
 #endif // DEPOSIT_H

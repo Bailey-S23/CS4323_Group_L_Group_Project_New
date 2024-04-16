@@ -2,10 +2,14 @@
 #include <iostream>
 #include <fstream>
 #include <mutex>
+#include <vector>
+#include <string>
+#include <iomanip> 
 
 using namespace std;
 
-// Implement the constructor defined in the header
+mutex Deposit::mtx;
+
 Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory) {
     if (transactionDetails.size() < 3) {
         cerr << "Invalid transaction details for deposit." << endl;
@@ -18,41 +22,35 @@ Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory) {
     depositAmount(accountNumber, amount);
 }
 
-// Implement the private member function
 void Deposit::depositAmount(string accNum, double amount) {
-    // Assuming each Deposit object is handled by a separate process, mutex is illustrative here
-    static mutex mtx;  // Made static to ensure it's shared across function calls
+    lock_guard<mutex> guard(mtx);  // Ensures thread-safe access
 
-    // Locking to ensure thread-safe access to the file
-    lock_guard<mutex> guard(mtx);
-
-    // File path
     string filePath = "Accounts/" + accNum;
-    
-    // Attempt to open the account file
-    fstream accountFile(filePath, ios::in | ios::out | ios::binary);
-    
+    fstream accountFile(filePath, ios::in | ios::out);
+
     if (!accountFile.is_open()) {
         cerr << "Account file " << accNum << " could not be opened for deposit." << endl;
         return;
     }
-    
+
     double currentBalance = 0.0;
-    
-    // Read current balance
     accountFile >> currentBalance;
-    
-    // Calculate new balance
-    currentBalance += amount;
-    
-    // Move the cursor to the beginning of the file to overwrite the balance
+
+    // Clear errors and prepare for writing
+    accountFile.clear(); 
     accountFile.seekp(0, ios::beg);
-    
-    // Write the new balance
-    accountFile << currentBalance;
-    
-    cout << "Deposit of " << amount << " to account " << accNum << " successful. New balance: " << currentBalance << endl;
-    
-    // Close the file
-    accountFile.close();
+
+    currentBalance += amount;
+
+    // Write the new balance with fixed precision
+    accountFile << fixed << setprecision(2) << currentBalance;
+    accountFile.flush();  // Flush the changes immediately
+
+    if (accountFile.fail()) {
+        cerr << "Failed to write the new balance to the account file " << accNum << "." << endl;
+    } else {
+        cout << "Deposit of " << amount << " to account " << accNum << " successful. New balance: " << currentBalance << endl;
+    }
+
+    accountFile.close();  // Ensure the file is closed after operations
 }

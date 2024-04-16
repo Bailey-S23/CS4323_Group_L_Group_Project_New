@@ -9,7 +9,7 @@ public:
     Inquiry(const std::vector<std::string>& transactionDetails, void* sharedMemory);
 
 private:
-    void inquireBalance(const std::string& accNum); // Declaration of the private member function
+    void inquireBalance(const std::string accNum); // Declaration of the private member function
 };
 
 #endif // INQUIRY_H
