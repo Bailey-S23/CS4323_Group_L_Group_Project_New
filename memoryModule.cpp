@@ -178,7 +178,6 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
 
     // shared memory ID
     int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
-    ;
 
     // loop to attach all semaphores to shared memory location
     for (i = 0; i < processCount; i++)
@@ -201,6 +200,12 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
     {
         if (fork() == 0)
         {
+            int *test;
+
+            if ((test = (int *)shmat(shmid, NULL, 0)) == (int *)-1)
+            {
+                cout << "Attach to memory failed" << endl;
+            }
             operations(accounts[k], semArray, k);
             break;
         }
