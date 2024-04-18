@@ -1,3 +1,7 @@
+// Author: Katie Pinell
+// Date: 4/14/2024
+// Description: This file closes an account by deleting the corresponding file.
+
 #include "CloseAccount.h"
 #include <iostream>
 #include <unistd.h>

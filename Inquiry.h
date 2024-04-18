@@ -1,3 +1,8 @@
+/* Author Name: Zach  Wilson
+    Email: stealth.wilson@okstate.edu
+    Date: 04/14/2024
+    Inquire header file to define the inquiry class*/
+
 #ifndef INQUIRY_H
 #define INQUIRY_H
 

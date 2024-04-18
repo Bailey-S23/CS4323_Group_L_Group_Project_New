@@ -1,3 +1,7 @@
+// Author: Katie Pinell
+// Date: 4/14/2024
+// Description: This file withdraws a given amount from an account.
+
 #include "Withdraw.h"
 #include <iostream>
 #include <fstream>
