@@ -58,6 +58,8 @@ bool accountExistsMem(string accNum)
     }
     else
     {
+        cout << "File " + accNum + " does not exist" << endl;
+
         exists = false;
     }
 
@@ -198,15 +200,14 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
     // Create child process, one for each account
     for (int k = 0; k < processCount; k++)
     {
-        if (fork() == 0)
+        pid = fork();
+        if (pid == 0)
         {
-            int *test;
 
-            if ((test = (int *)shmat(shmid, NULL, 0)) == (int *)-1)
-            {
-                cout << "Attach to memory failed" << endl;
-            }
+            shmat(shmid, NULL, 0);
+
             operations(accounts[k], semArray, k);
+            cout << pid << endl;
             break;
         }
     }

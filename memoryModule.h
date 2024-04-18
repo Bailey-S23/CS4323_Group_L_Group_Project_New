@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "UserAccounts.h"
 
 using namespace std;
 
