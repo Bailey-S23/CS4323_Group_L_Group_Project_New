@@ -100,6 +100,8 @@ int main()
     }
     //.................................................................................
 
+
+
     // used to read file
     string fileToRead = "InputFile";
     ifstream inputFile(fileToRead);
@@ -152,7 +154,7 @@ int main()
         }
     }
 
-// Pass user accounts and number of user accounts to memoryModule
+    // Pass user accounts and number of user accounts to memoryModule
     memoryModule memory = memoryModule(accountVector, numOfUsers);
 
     for (int i = 0; i < numOfUsers; i++)
@@ -160,31 +162,37 @@ int main()
         wait(NULL);
     }
 
-        /*
-            for (int i = 0; i < accountVector.size(); i++)
+    /*
+        for (int i = 0; i < accountVector.size(); i++)
+        {
+            for (int k = 0; k < accountVector[i].operationVector.size(); k++)
             {
-                for (int k = 0; k < accountVector[i].operationVector.size(); k++)
+                vector<string> line = accountVector[i].operationVector[k];
+                for (int j = 0; j < line.size(); j++)
                 {
-                    vector<string> line = accountVector[i].operationVector[k];
-                    for (int j = 0; j < line.size(); j++)
-                    {
-                        cout << line[j] << endl;
-                    }
-                }
-                cout << "----" << endl;
-            }
-
-            cout << "===============================" << endl;
-
-            for (int i = 0; i < accountVector.size(); i++)
-            {
-                for (int k = 0; k < accountVector[i].operations.size(); k++)
-                {
-                    string line = accountVector[i].operations[k];
-                    cout << line << endl;
+                    cout << line[j] << endl;
                 }
             }
+            cout << "----" << endl;
+        }
 
-            */
-        return 0;
+        cout << "===============================" << endl;
+
+        for (int i = 0; i < accountVector.size(); i++)
+        {
+            for (int k = 0; k < accountVector[i].operations.size(); k++)
+            {
+                string line = accountVector[i].operations[k];
+                cout << line << endl;
+            }
+        }
+
+        */
+
+    for (int i = 0; i < 100; i++)
+    {
+        wait(NULL);
+    }
+
+    return 0;
 }

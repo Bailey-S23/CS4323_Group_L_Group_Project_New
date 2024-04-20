@@ -12,7 +12,7 @@
 
 using namespace std;
 
-mutex TransferTo::mtx;
+mutex mtx;
 
 TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
 

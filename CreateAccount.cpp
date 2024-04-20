@@ -43,7 +43,7 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 */
 
 // Constructor that creates new account files
-CreateAccount::CreateAccount(vector<string> accountInfo, void* sharedMemory)
+CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
 
     accBalance = stoi(accountInfo[2].data());
@@ -59,4 +59,33 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void* sharedMemory)
     outfile.close();
 
     cout << "------------------Account Created: " + accName << endl;
+
+//------------------------------------------
+
+    char *readInCreate = (char *)sharedMemory;
+
+    cout << "Read in Create: " << readInCreate << endl;
+
+    string writtenInCreate = "This line written in create\n";
+
+    char *writeInCreate = writtenInCreate.data();
+
+    memcpy(sharedMemory, writeInCreate,  sizeof(writtenInCreate) * 2);
+
+    
+
+    /*
+        char *writeOut = (char *)shmat(shmid, NULL, 0);
+
+        cout << "Read from Create" << writeOut;
+
+        if (writeOut == (void *)-1)
+        {
+            perror("Shared memory attach");
+        }
+
+        cout << writeOut << endl
+             << flush;
+
+             */
 }

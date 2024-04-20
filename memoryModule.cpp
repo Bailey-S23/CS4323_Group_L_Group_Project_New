@@ -67,7 +67,7 @@ bool accountExistsMem(string accNum)
 }
 
 // Handle operations from input file
-void operations(UserAccounts account, sem_t **allSems, int processNum)
+void operations(UserAccounts account, sem_t **allSems, int processNum, int shmid, void *sharedMemory)
 {
 
     for (int i = 0; i < account.operations.size(); i++)
@@ -158,6 +158,21 @@ void operations(UserAccounts account, sem_t **allSems, int processNum)
     }
 }
 
+void *create_shared_memory(size_t size)
+{
+    // Our memory buffer will be readable and writable:
+    int protection = PROT_READ | PROT_WRITE;
+
+    // The buffer will be shared (meaning other processes can access it), but
+    // anonymous (meaning third-party processes cannot obtain an address for it),
+    // so only this process and its children will be able to use it:
+    int visibility = MAP_ANONYMOUS | MAP_SHARED;
+
+    // The remaining parameters to `mmap()` are not important for this use case,
+    // but the manpage for `mmap` explains their purpose.
+    return mmap(NULL, size, protection, visibility, 0, 0);
+}
+
 // Create shared memory for semaphores and files, and spawns child processes
 // Needs to be updated. Does not control syncronization
 void createMemory(vector<UserAccounts> accounts, int processCount)
@@ -173,22 +188,26 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
         semArray[j] = NULL;
     }
 
-    // Create key for shared memory
     key_t key = ftok("Accounts/", 'a');
 
     int i = 0;
 
-    // shared memory ID
     int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+
+    char *writeOut = (char *)shmat(shmid, NULL, 0);
+
+    // shared memory ID
+    void *sharedMemory = create_shared_memory(4000);
+
+    string writtenInMemMod = "This line written in memoryModule\n";
+
+    char *writeInMemMod = writtenInMemMod.data();
+
+    memcpy(sharedMemory, writeInMemMod, sizeof(writtenInMemMod) * 2);
 
     // loop to attach all semaphores to shared memory location
     for (i = 0; i < processCount; i++)
     {
-
-        if (shmid == -1)
-        {
-            cout << "Memory Creation Failed" << endl;
-        }
 
         // Attach each semaphore in array to shared memory
         semArray[i] = (sem_t *)shmat(shmid, NULL, 0);
@@ -206,11 +225,21 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
 
             shmat(shmid, NULL, 0);
 
-            operations(accounts[k], semArray, k);
+            operations(accounts[k], semArray, k, shmid, sharedMemory);
             cout << pid << endl;
             break;
         }
     }
+
+    for (int i = 0; i < processCount; i++)
+    {
+        wait(NULL);
+    }
+
+    char *readInMemMod = (char *)sharedMemory;
+
+    cout << "This line read in memoryModule: " << readInMemMod << endl;
+
 }
 
 // Constructor, calls create memory with user accounts from driver
