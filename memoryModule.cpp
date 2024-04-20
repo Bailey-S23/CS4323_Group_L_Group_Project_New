@@ -196,6 +196,13 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
 
     char *writeOut = (char *)shmat(shmid, NULL, 0);
 
+
+
+
+
+
+
+
     // shared memory ID
     void *sharedMemory = create_shared_memory(4000);
 
@@ -204,6 +211,15 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
     char *writeInMemMod = writtenInMemMod.data();
 
     memcpy(sharedMemory, writeInMemMod, sizeof(writtenInMemMod) * 2);
+
+
+
+
+
+
+
+
+
 
     // loop to attach all semaphores to shared memory location
     for (i = 0; i < processCount; i++)
@@ -222,7 +238,7 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
         pid = fork();
         if (pid == 0)
         {
-
+            
             shmat(shmid, NULL, 0);
 
             operations(accounts[k], semArray, k, shmid, sharedMemory);
@@ -235,6 +251,8 @@ void createMemory(vector<UserAccounts> accounts, int processCount)
     {
         wait(NULL);
     }
+
+
 
     char *readInMemMod = (char *)sharedMemory;
 

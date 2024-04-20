@@ -18,7 +18,7 @@ class UserAccounts
 {
     public:
         string accountNumber;
-        vector<vector<string>> operationVector;
+        //vector<vector<string>> operationVector;
         vector<string> operations;
         UserAccounts(string accountNumber);
 };

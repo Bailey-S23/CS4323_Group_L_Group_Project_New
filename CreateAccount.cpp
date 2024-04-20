@@ -60,7 +60,13 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 
     cout << "------------------Account Created: " + accName << endl;
 
-//------------------------------------------
+    //------------------------------------------
+
+
+
+
+
+
 
     char *readInCreate = (char *)sharedMemory;
 
@@ -68,11 +74,17 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 
     string writtenInCreate = "This line written in create\n";
 
+    string writtenInCreate2 = "This line written in create2\n";
+
     char *writeInCreate = writtenInCreate.data();
 
-    memcpy(sharedMemory, writeInCreate,  sizeof(writtenInCreate) * 2);
+    char *writeInCreate2 = writtenInCreate2.data();
 
-    
+    sprintf((char *)sharedMemory, writeInCreate);
+
+    sprintf((char *)sharedMemory, writeInCreate2);
+
+    // memcpy(sharedMemory, writeInCreate,  sizeof(writtenInCreate) * 2);
 
     /*
         char *writeOut = (char *)shmat(shmid, NULL, 0);
