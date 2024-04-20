@@ -1,0 +1,49 @@
+THERE ARE 3 USERS (PROCESSES) AND ALL 3 RUN INDEPENTENTLY FROM EACH OTHER
+
+
+User 1 (A332131):
+    Withdraws $40.
+
+User 2 (A342131):
+    Creates an account and deposits $40.
+    Inquires about the balance.
+    Transfers $40 to User 3 (A382131).
+    Inquires about the balance.
+    Closes the account.
+
+User 3 (A382131):
+    Creates an account with no initial deposit.
+    Deposits $10 into the account.
+    Inquires about the balance.
+
+
+CREATE A QUEUE FOR ALL 3 USER'S PROCESSES
+
+
+user1Queue = {
+    A332131, withdraw, 40
+}
+
+user2Queue = {
+    A342131, create, 40
+    A342131, inquiry
+    A342131, transfer, 40, A382131
+    A342131, inquiry
+    A342131, close
+}
+
+user3Queue = {
+    A382131, create, 0
+    A382131, deposit, 10
+    A382131, inquiry
+}
+
+
+
+for (int i = 0, i < queue; i++) {
+
+    wait(until inputFile.close())
+    execute currentProcess;
+    signal(inputFile.close())
+
+}
