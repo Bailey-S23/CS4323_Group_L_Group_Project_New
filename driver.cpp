@@ -100,13 +100,15 @@ int main()
     }
     //.................................................................................
 
-    // used to read file
-    string fileToRead = "InputFile";
-    ifstream inputFile(fileToRead);
+    ifstream inputFile("InputFile.txt");
+    if (!inputFile.is_open())
+    {
+        cerr << "Could not open the input file" << endl;
+        return;
+    } else { continue; }
+
     string lineOfFile;
-
     int numOfUsers;
-
     vector<UserAccounts> accountVector;
 
     // if file is open
@@ -150,6 +152,8 @@ int main()
                 accountVector.push_back(newAccount2);
             }
         }
+
+        inputFile.close();
     }
 
 // Pass user accounts and number of user accounts to memoryModule
