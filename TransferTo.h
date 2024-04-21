@@ -15,7 +15,8 @@ public:
     TransferTo(vector<string> transactionDetails, void* sharedMemory);
 
 private:
-    void transferAmount(string withdrawAccount, double amount, string depositAccount);
+    void withdrawAmount(string account, double amount);
+    void depositAmount(string account, double amount);
 };
 
 #endif
