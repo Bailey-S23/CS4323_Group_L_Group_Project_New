@@ -28,6 +28,11 @@ void Withdraw::WithdrawAmount(string withdrawAccount, double amount) {
     string filePath = "Accounts/" + withdrawAccount;
     fstream withdrawAccountFile(filePath, ios::in | ios::out | ios::binary);
 
+    if (!withdrawAccountFile.is_open()) {
+        cerr << "Account file " << withdrawAccount << " could not be opened for withdraw." << endl;
+        return;
+    }
+
     double withdrawAccountBalance = 0.0;
     withdrawAccountFile >> withdrawAccountBalance;
 
