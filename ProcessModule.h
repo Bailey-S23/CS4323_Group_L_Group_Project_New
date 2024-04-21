@@ -1,7 +1,7 @@
 // Author: Bailey Schultz
 
-#ifndef MEMORYMODULE_H
-#define MEMORYMODULE_H
+#ifndef PROCESSMODULE_H
+#define PROCESSMODULE_H
 
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -14,10 +14,9 @@
 #include <string>
 #include <vector>
 #include "UserAccounts.h"
+#include "SharedMemoryMod.h"
 
 using namespace std;
-
-
 
 /*
 The memoryModule will be updated or changed. As of now some code showing memory mapping is being tested
@@ -25,16 +24,13 @@ int the CreateAccount class. It needs more work, and needs to be moved to the me
 the other classes like CreateAccount, Withdraw, etc should be called from.
 */
 
-
-class memoryModule
+class ProcessModule
 {
-    public:
-        memoryModule(vector<UserAccounts> accounts, int processCount);
-        vector<string> tokenizer(string lineOfFile);
-        bool accountExists(string accNum);
-        
-        
+public:
+    ProcessModule(vector<UserAccounts> accounts, int processCount);
 
+private:
+    void createProcesses(vector<UserAccounts> accounts, int processCount, void* sharedMemory);
 };
 
 #endif

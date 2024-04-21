@@ -16,8 +16,9 @@ public:
     Deposit(std::vector<std::string> transactionDetails, void* sharedMemory);
 
 private:
-    void depositAmount(std::string accNum, double amount);
+    void depositAmount(std::string accNum, double amount, void* sharedMemory);
     static mutex mtx;  // Make mutex a class static member if sharing across instances
+    string returnCurrentTimeAndDate();
 };
 
 #endif // DEPOSIT_H

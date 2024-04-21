@@ -24,10 +24,21 @@ Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory) {
     string accountNumber = transactionDetails[0];
     double amount = stod(transactionDetails[2]);
 
-    depositAmount(accountNumber, amount);
+    depositAmount(accountNumber, amount, sharedMemory);
 }
 
-void Deposit::depositAmount(string accNum, double amount) {
+string Deposit::returnCurrentTimeAndDate()
+{
+    auto currentTime = chrono::system_clock::now();
+    auto currentTime_t = chrono::system_clock::to_time_t(currentTime);
+
+    stringstream ss;
+    ss << std::put_time(localtime(&currentTime_t), "%Y-%m-%d %X");
+    return ss.str();
+}
+
+
+void Deposit::depositAmount(string accNum, double amount, void* sharedMemory) {
     lock_guard<mutex> guard(mtx);  // Ensures thread-safe access
 
     string filePath = "Accounts/" + accNum;
@@ -51,10 +62,31 @@ void Deposit::depositAmount(string accNum, double amount) {
     accountFile << fixed << setprecision(2) << currentBalance;
     accountFile.flush();  // Flush the changes immediately
 
+
+        string depositLog = to_string(amount);
+
     if (accountFile.fail()) {
-        cerr << "Failed to write the new balance to the account file " << accNum << "." << endl;
-    } else {
-        cout << "Deposit of " << amount << " to account " << accNum << " successful. New balance: " << currentBalance << endl;
+        //cerr << "Failed to write the new balance to the account file " << accNum << "." << endl;
+
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Deposit " + accNum + " " + depositLog + " FAILURE " + time + "\n";
+
+        char *readInCreate = (char *)sharedMemory;
+
+        char *writeInLog = writeToFile.data();
+
+        strcat((char *)sharedMemory, writeInLog);
+    }
+    else 
+    {
+        //cout << "Deposit of " << amount << " to account " << accNum << " successful. New balance: " << currentBalance << endl;
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Deposit " + accNum + " " + depositLog + " SUCCESS " + time + "\n";
+
+
+        char *writeInLog = writeToFile.data();
+
+        strcat((char *)sharedMemory, writeInLog);
     }
 
     accountFile.close();  // Ensure the file is closed after operations

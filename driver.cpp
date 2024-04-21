@@ -20,12 +20,11 @@
 #include <fcntl.h>
 #include "UserAccounts.h"
 #include "UserAccounts.cpp"
-#include "memoryModule.h"
-#include "memoryModule.cpp"
+#include "SharedMemoryMod.h"
+#include "ProcessModule.h"
+#include "ProcessModule.cpp"
 
 using namespace std;
-
-#define PAGESIZE 4096
 
 // This function breaks down lines of file and returns a vector holding each piece as an element
 vector<string> tokenize(string lineOfFile)
@@ -155,44 +154,7 @@ int main()
     }
 
     // Pass user accounts and number of user accounts to memoryModule
-    memoryModule memory = memoryModule(accountVector, numOfUsers);
-
-    for (int i = 0; i < numOfUsers; i++)
-    {
-        wait(NULL);
-    }
-
-    /*
-        for (int i = 0; i < accountVector.size(); i++)
-        {
-            for (int k = 0; k < accountVector[i].operationVector.size(); k++)
-            {
-                vector<string> line = accountVector[i].operationVector[k];
-                for (int j = 0; j < line.size(); j++)
-                {
-                    cout << line[j] << endl;
-                }
-            }
-            cout << "----" << endl;
-        }
-
-        cout << "===============================" << endl;
-
-        for (int i = 0; i < accountVector.size(); i++)
-        {
-            for (int k = 0; k < accountVector[i].operations.size(); k++)
-            {
-                string line = accountVector[i].operations[k];
-                cout << line << endl;
-            }
-        }
-
-        */
-
-    for (int i = 0; i < 100; i++)
-    {
-        wait(NULL);
-    }
+    ProcessModule processes = ProcessModule(accountVector, numOfUsers);
 
     return 0;
 }

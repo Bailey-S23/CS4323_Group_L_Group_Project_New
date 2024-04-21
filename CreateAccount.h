@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+
 using namespace std;
 
 class CreateAccount
@@ -22,6 +23,8 @@ public:
     int accBalance;
     // CreateAccount(vector<string> accountInfo, void* sharedMemory);
     CreateAccount(vector<string> accountInfo, void* sharedMemory);
+    bool accExists(string accountName);
+    string returnCurrentTimeAndDate();
 };
 
 #endif

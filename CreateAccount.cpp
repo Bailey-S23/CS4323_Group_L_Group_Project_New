@@ -8,6 +8,11 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <fcntl.h>
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 /*
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
@@ -42,6 +47,40 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 }
 */
 
+bool CreateAccount::accExists(string accountNumber)
+{
+
+    ifstream file;
+
+    file.open("Accounts/" + accountNumber);
+
+    bool exists = false;
+
+    if (file)
+    {
+        cout << "File " + accountNumber + " exists" << endl;
+        exists = true;
+    }
+    else
+    {
+        cout << "File " + accountNumber + " does not exist" << endl;
+
+        exists = false;
+    }
+
+    return exists;
+}
+
+string CreateAccount::returnCurrentTimeAndDate()
+{
+    auto currentTime = chrono::system_clock::now();
+    auto currentTime_t = chrono::system_clock::to_time_t(currentTime);
+
+    stringstream ss;
+    ss << std::put_time(localtime(&currentTime_t), "%Y-%m-%d %X");
+    return ss.str();
+}
+
 // Constructor that creates new account files
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
@@ -58,46 +97,28 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 
     outfile.close();
 
-    cout << "------------------Account Created: " + accName << endl;
-
     //------------------------------------------
 
+    if (accExists(accountInfo[0]))
+    {
+
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Create " + accName + " " + accountInfo[2] + " SUCCESS " + time + "\n";
 
 
+        char *writeInLog = writeToFile.data();
 
+        strcat((char *)sharedMemory, writeInLog);
+    }
+    else
+    {
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Create " + accName + " " + accountInfo[2] + " FAILURE " + time+ "\n";
 
+        char *readInCreate = (char *)sharedMemory;
 
+        char *writeInLog = writeToFile.data();
 
-    char *readInCreate = (char *)sharedMemory;
-
-    cout << "Read in Create: " << readInCreate << endl;
-
-    string writtenInCreate = "This line written in create\n";
-
-    string writtenInCreate2 = "This line written in create2\n";
-
-    char *writeInCreate = writtenInCreate.data();
-
-    char *writeInCreate2 = writtenInCreate2.data();
-
-    sprintf((char *)sharedMemory, writeInCreate);
-
-    sprintf((char *)sharedMemory, writeInCreate2);
-
-    // memcpy(sharedMemory, writeInCreate,  sizeof(writtenInCreate) * 2);
-
-    /*
-        char *writeOut = (char *)shmat(shmid, NULL, 0);
-
-        cout << "Read from Create" << writeOut;
-
-        if (writeOut == (void *)-1)
-        {
-            perror("Shared memory attach");
-        }
-
-        cout << writeOut << endl
-             << flush;
-
-             */
+        strcat((char *)sharedMemory, writeInLog);
+    }
 }
