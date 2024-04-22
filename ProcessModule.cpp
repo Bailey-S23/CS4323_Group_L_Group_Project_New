@@ -35,9 +35,9 @@ void ProcessModule::createProcesses(vector<UserAccounts> accounts, int processCo
 
     if (pid != 0)
     {
-        char *readInMemMod = (char *)sharedMemory;
+        char *readAfterTransactions = (char *)sharedMemory;
 
-        cout << "This line read in ProcessModule: \n" << readInMemMod << endl;
+        cout << "Transaction log: \n" << readAfterTransactions << endl;
     }
 }
 

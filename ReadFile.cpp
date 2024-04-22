@@ -20,20 +20,23 @@
 #include "SharedMemoryMod.h"
 #include "ProcessModule.h"
 #include "ProcessModule.cpp"
+
 using namespace std;
 
 // This function breaks down lines of file and returns a vector holding each piece as an element
 vector<string> ReadFile::tokenize(string lineOfFile)
 {
-    stringstream sstream(lineOfFile);
-    string singleString;
-    vector<string> partsOfLine;
+    stringstream sstream(lineOfFile); // stream string to split lines of file into single pieces of line
+    string singleString;              // string to hold single piece of line
+    vector<string> partsOfLine;       // vector to hold all individual pieces of line
 
+    // loop through entire line, placing each piece in the vector
     while (sstream >> singleString)
     {
         partsOfLine.push_back(singleString);
     }
 
+    // return the vector containing each piece of the line
     return partsOfLine;
 }
 
@@ -71,10 +74,10 @@ int ReadFile::checkForAccountInVector(vector<UserAccounts> accountVector, string
     return -1;
 }
 
-ReadFile::ReadFile(string inputFileName)
+ReadFile::ReadFile(string fileToRead)
 {
 
-    cout << inputFileName << endl;
+    cout << fileToRead << endl;
 
     // This block of code creates the directory "Accounts" if it does not exist already
     //.................................................................................
@@ -97,10 +100,8 @@ ReadFile::ReadFile(string inputFileName)
     }
     //.................................................................................
 
-
-
     // used to read file
-    ifstream inputFile(inputFileName);
+    ifstream inputFile(fileToRead);
     string lineOfFile;
 
     int numOfUsers;
@@ -151,7 +152,8 @@ ReadFile::ReadFile(string inputFileName)
     }
     else
     {
-        cout << "reading file failed" << endl;
+        cerr << "Failed to open file: " << fileToRead << endl;
+        exit(-1);
     }
 
     cout << numOfUsers << endl;

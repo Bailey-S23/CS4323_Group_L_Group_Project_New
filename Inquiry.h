@@ -9,12 +9,14 @@
 #include <string>
 #include <vector>
 
-class Inquiry {
+class Inquiry
+{
 public:
-    Inquiry(const std::vector<std::string>& transactionDetails, void* sharedMemory);
+    Inquiry(const std::vector<std::string> &transactionDetails, void *sharedMemory);
 
 private:
-    void inquireBalance(const std::string accNum); // Declaration of the private member function
+    void inquireBalance(const std::string accNum, void *sharedMemory); // Declaration of the private member function
+    string returnCurrentTimeAndDate();
 };
 
 #endif // INQUIRY_H
