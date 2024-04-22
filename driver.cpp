@@ -18,12 +18,16 @@
 #include "ReadFile.cpp"
 
 using namespace std;
-
 int main(int argc, char* argv[])
 {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " <input_file_name>\n";
+        return 1;
+    }
 
-    string inputFileName = "InputFile";
-    ReadFile fileToRead = ReadFile(inputFileName);
-
-    return 0;
-}
+      string fileToRead = argv[1]; // Use the command-line argument for the input file name
+    ifstream inputFile(fileToRead);
+    if (!inputFile.is_open()) {
+        cerr << "Failed to open file: " << fileToRead << endl;
+        return 1;
+    }
