@@ -9,7 +9,25 @@
 
 using namespace std;
 
-CloseAccount::CloseAccount(vector<string> accountInfo)
+
+
+
+/************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
+string CloseAccount::returnCurrentTimeAndDate()
+{
+    auto currentTime = chrono::system_clock::now();
+    auto currentTime_t = chrono::system_clock::to_time_t(currentTime);
+
+    stringstream sstream;
+    sstream << std::put_time(localtime(&currentTime_t), "%Y-%m-%d %X");
+    return sstream.str();
+}
+/************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
+
+
+
+
+CloseAccount::CloseAccount(vector<string> accountInfo, void* sharedMemory)
 {
 
     // Get the account name from the account info
@@ -25,9 +43,28 @@ CloseAccount::CloseAccount(vector<string> accountInfo)
     if (accountDeleted != 0)
     {
         cout << "Error deleting account: " + accName << endl;
+
+
+        /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Close " + accName +  + " FAILURE " + time + "\n";
+        char *readInCreate = (char *)sharedMemory;
+        char *writeInLog = writeToFile.data();
+        strcat((char *)sharedMemory, writeInLog);
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
     }
     else // The account was successfully deleted
     {
         cout << "Account deleted: " + accName << endl;
+
+
+        /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Close " + accName +  + " SUCCESS " + time + "\n";
+        char *readInCreate = (char *)sharedMemory;
+        char *writeInLog = writeToFile.data();
+        strcat((char *)sharedMemory, writeInLog);
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
+
     }
 }

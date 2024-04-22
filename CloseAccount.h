@@ -16,7 +16,8 @@ class CloseAccount
 
     public:
         string accName;
-        CloseAccount(vector<string> accountInfo);
+        CloseAccount(vector<string> accountInfo, void* sharedMemory);
+        string returnCurrentTimeAndDate();
 };
 
 #endif

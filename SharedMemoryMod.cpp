@@ -151,7 +151,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         }
         case 5:
         {
-            CloseAccount closeAccount = CloseAccount(partsOfLine);
+            CloseAccount closeAccount = CloseAccount(partsOfLine, sharedMemory);
 
             break;
         }

@@ -53,7 +53,6 @@ string CreateAccount::returnCurrentTimeAndDate()
 // Constructor that creates new account files
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
-
     accBalance = stoi(accountInfo[2].data());
     string accName = accountInfo[0];
 
@@ -75,7 +74,6 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 
     if (accExists(accountInfo[0]))
     {
-
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Create " + accName + " " + accountInfo[2] + " SUCCESS " + time + "\n";
         char *writeInLog = writeToFile.data();

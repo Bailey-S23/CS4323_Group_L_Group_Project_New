@@ -9,14 +9,16 @@
 #include <mutex>
 #include <vector>
 #include <string>
-#include <iomanip> 
+#include <iomanip>
 
 using namespace std;
 
 mutex Withdraw::mtx;
 
-Withdraw::Withdraw(vector<string> transactionDetails, void* sharedMemory) {
-    if (transactionDetails.size() < 3) {
+Withdraw::Withdraw(vector<string> transactionDetails, void *sharedMemory)
+{
+    if (transactionDetails.size() < 3)
+    {
         cerr << "Invalid transaction details for Withdraw." << endl;
         return;
     }
@@ -27,6 +29,7 @@ Withdraw::Withdraw(vector<string> transactionDetails, void* sharedMemory) {
     WithdrawAmount(accountNumber, amount, sharedMemory);
 }
 
+/************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
 string Withdraw::returnCurrentTimeAndDate()
 {
     auto currentTime = chrono::system_clock::now();
@@ -36,23 +39,35 @@ string Withdraw::returnCurrentTimeAndDate()
     ss << std::put_time(localtime(&currentTime_t), "%Y-%m-%d %X");
     return ss.str();
 }
+/************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
 
-
-void Withdraw::WithdrawAmount(string accNum, double amount, void* sharedMemory) {
+void Withdraw::WithdrawAmount(string accNum, double amount, void *sharedMemory)
+{
     lock_guard<mutex> guard(mtx);
 
     string filePath = "Accounts/" + accNum;
     fstream accountFile(filePath, ios::in | ios::out);
 
-    if (!accountFile.is_open()) {
+    if (!accountFile.is_open())
+    {
         cerr << "Account file " << accNum << " could not be opened for Withdraw." << endl;
+
+        /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
+        string WithdrawLog = to_string(amount);
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Withdraw " + accNum + " " + WithdrawLog + " FAILURE " + time + "\n";
+        char *readInCreate = (char *)sharedMemory;
+        char *writeInLog = writeToFile.data();
+        strcat((char *)sharedMemory, writeInLog);
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
+
         return;
     }
 
     double currentBalance = 0.0;
     accountFile >> currentBalance;
 
-    accountFile.clear(); 
+    accountFile.clear();
     accountFile.seekp(0, ios::beg);
 
     currentBalance -= amount;
@@ -60,28 +75,26 @@ void Withdraw::WithdrawAmount(string accNum, double amount, void* sharedMemory) 
     accountFile << fixed << setprecision(2) << currentBalance;
     accountFile.flush();
 
+    string WithdrawLog = to_string(amount);
 
-        string WithdrawLog = to_string(amount);
-
-    if (accountFile.fail()) {
+    if (accountFile.fail())
+    {
+        /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Withdraw " + accNum + " " + WithdrawLog + " FAILURE " + time + "\n";
-
         char *readInCreate = (char *)sharedMemory;
-
         char *writeInLog = writeToFile.data();
-
         strcat((char *)sharedMemory, writeInLog);
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
     }
-    else 
+    else
     {
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Withdraw " + accNum + " " + WithdrawLog + " SUCCESS " + time + "\n";
-
-
         char *writeInLog = writeToFile.data();
-
         strcat((char *)sharedMemory, writeInLog);
+        /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
     }
 
     accountFile.close();
