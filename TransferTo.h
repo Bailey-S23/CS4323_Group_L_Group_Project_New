@@ -19,9 +19,10 @@ public:
 
 private:
     static mutex mtx;
+    // I separated transfer into 2 methods (withdraw & deposit) to better organize file access and prevent any mistakes with shared resources
     void withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
     void depositAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
-    string returnCurrentTimeAndDate();
+    string returnCurrentTimeAndDate(); // Use this to log process execution infor
     Monitor& monitor; // Reference to the Monitor object for inter-process synchronization
 };
 
