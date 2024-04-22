@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include "Monitor.h"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ class CloseAccount
 
     public:
         string accName;
-        CloseAccount(vector<string> accountInfo, void* sharedMemory);
+        CloseAccount(vector<string> accountInfo, void* sharedMemory, Monitor& monitor);
         string returnCurrentTimeAndDate();
 };
 

@@ -8,13 +8,15 @@
 
 #include <vector>
 #include <string>
+#include "Monitor.h"
 
-class Withdraw {
+class Withdraw
+{
 public:
-    Withdraw(std::vector<std::string> transactionDetails, void* sharedMemory);
+    Withdraw(std::vector<std::string> transactionDetails, void *sharedMemory, Monitor &monitor);
 
 private:
-    void WithdrawAmount(std::string accNum, double amount, void* sharedMemory);
+    void WithdrawAmount(std::string accNum, double amount, void *sharedMemory);
     static mutex mtx;
     string returnCurrentTimeAndDate();
 };

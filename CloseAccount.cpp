@@ -27,9 +27,9 @@ string CloseAccount::returnCurrentTimeAndDate()
 
 
 
-CloseAccount::CloseAccount(vector<string> accountInfo, void* sharedMemory)
+CloseAccount::CloseAccount(vector<string> accountInfo, void* sharedMemory, Monitor& monitor)
 {
-
+    monitor.acquire();
     // Get the account name from the account info
     string accName = accountInfo[0];
 
@@ -67,4 +67,5 @@ CloseAccount::CloseAccount(vector<string> accountInfo, void* sharedMemory)
         /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
 
     }
+    monitor.release();
 }

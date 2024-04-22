@@ -117,14 +117,14 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         case 0:
         {
 
-            Withdraw(partsOfLine, sharedMemory);
+            Withdraw(partsOfLine, sharedMemory, monitor);
             break;
         }
         case 1:
         {
             if (!accExistsMem(partsOfLine[0]))
             {
-                CreateAccount(partsOfLine, sharedMemory);
+                CreateAccount(partsOfLine, sharedMemory, monitor);
             }
             break;
         }
@@ -148,7 +148,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         }
         case 5:
         {
-            CloseAccount closeAccount = CloseAccount(partsOfLine, sharedMemory);
+            CloseAccount(partsOfLine, sharedMemory, monitor);
 
             break;
         }

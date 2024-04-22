@@ -13,6 +13,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include "Monitor.h"
 
 // this function checks to see if an account currently exists
 bool CreateAccount::accExists(string accountNumber)
@@ -48,8 +49,9 @@ string CreateAccount::returnCurrentTimeAndDate()
 /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
 
 // Constructor that creates new account files
-CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
+CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory, Monitor &monitor)
 {
+    monitor.acquire();
     // get data from vector
     accBalance = stoi(accountInfo[2].data());
     string accName = accountInfo[0];
@@ -98,10 +100,10 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
         // prepare string to write to log
         string writeToFile = "Transaction type: Create " + accName + " " + accountInfo[2] + " FAILURE " + time + "\n";
         // convert to char* to write to log
-        char *readInCreate = (char *)sharedMemory;
         char *writeInLog = writeToFile.data();
         // concatenate the message into the shared memory
         strcat((char *)sharedMemory, writeInLog);
         /************************************* ABOVE THIS LINE ADDED FOR SHARED MEMORY *************************************/
     }
+    monitor.release();
 }

@@ -55,6 +55,7 @@ void ProcessModule::createProcesses(vector<UserAccounts> accounts, int processCo
         if (pid == 0)
         {
             // Child process
+            monitor.release();
             UserAccounts account = accounts[k];
             SharedMemoryMod(account, processCount, sharedMemory, monitor);
             pid_t pid = getpid();

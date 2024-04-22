@@ -15,8 +15,9 @@ using namespace std;
 
 mutex Withdraw::mtx;
 
-Withdraw::Withdraw(vector<string> transactionDetails, void *sharedMemory)
+Withdraw::Withdraw(vector<string> transactionDetails, void *sharedMemory, Monitor &monitor)
 {
+    monitor.acquire();
     if (transactionDetails.size() < 3)
     {
         cerr << "Invalid transaction details for Withdraw." << endl;
@@ -27,6 +28,7 @@ Withdraw::Withdraw(vector<string> transactionDetails, void *sharedMemory)
     double amount = stod(transactionDetails[2]);
 
     WithdrawAmount(accountNumber, amount, sharedMemory);
+    monitor.release();
 }
 
 /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/
@@ -98,4 +100,6 @@ void Withdraw::WithdrawAmount(string accNum, double amount, void *sharedMemory)
     }
 
     accountFile.close();
+
+    
 }
