@@ -1,31 +1,26 @@
-// Monitor.h
+/* Author Name: Zach  Wilson
+    Email: stealth.wilson@okstate.edu
+    Date: 04/14/2024
+    Monitor header file to define the monitor class*/
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <mutex>
-#include <condition_variable>
-#include <queue>
-#include <vector>
-#include <string>
+#include <semaphore.h>
+#include <fcntl.h> // For O_CREAT, O_EXCL, etc.
 
-// Structure to represent a transaction
-struct Transaction {
-    std::string command;                 // Command type (Withdraw, Deposit, etc.)
-    std::vector<std::string> parameters; // Parameters associated with the command
-};
-
-class TransactionMonitor {
-public:
-    TransactionMonitor();               // Constructor
-    ~TransactionMonitor();              // Destructor
-    void enqueueTransaction(const Transaction& transaction);
-    Transaction dequeueTransaction();
-    bool isEmpty();
-
+class Monitor {
 private:
-    std::mutex mtx;                            // Mutex for synchronization
-    std::condition_variable cv;                // Condition variable for queue management
-    std::queue<Transaction> transactionQueue;  // Queue to hold transactions
+    sem_t* mutex;
+    sem_t* cond_var;
+    std::string mutexName;
+    std::string condVarName;
+public:
+    Monitor(const char* mutexName, const char* condVarName);
+    ~Monitor();
+    void acquire();
+    void release();
+    void wait();
+    void signal();
 };
 
 #endif // MONITOR_H

@@ -172,9 +172,6 @@ ReadFile::ReadFile(string fileToRead)
         exit(-1);
     }
 
-    pid_t pid = getpid();
-    kill(pid, SIGTERM);
-
     // Pass user accounts and number of user accounts to memoryModule
     ProcessModule processes = ProcessModule(accountVector, numOfUsers);
 }

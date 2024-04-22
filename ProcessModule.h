@@ -15,6 +15,7 @@
 #include <vector>
 #include "UserAccounts.h"
 #include "SharedMemoryMod.h"
+#include "Monitor.h"
 
 using namespace std;
 
@@ -30,7 +31,7 @@ public:
     ProcessModule(vector<UserAccounts> accounts, int processCount);
 
 private:
-    void createProcesses(vector<UserAccounts> accounts, int processCount, void* sharedMemory);
+    void createProcesses(vector<UserAccounts> accounts, int processCount, void* sharedMemory, Monitor& monitor); //add monitor
 };
 
 #endif
