@@ -31,8 +31,7 @@ Monitor::~Monitor() {
 
 void Monitor::acquire() {
     std::cout << "Process " << getpid() << " attempting to acquire lock..." << std::endl;
-    //sem_wait(mutex); 
-    sem_post(mutex);
+    sem_wait(mutex); 
     std::cout << "Process " << getpid() << " acquired lock." << std::endl;
 }
 
