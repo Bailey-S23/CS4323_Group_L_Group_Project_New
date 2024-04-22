@@ -18,7 +18,9 @@ using namespace std;
 mutex TransferTo::mtx;
 
 TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
-
+    // If input does not have all necessary values:
+    // Account to withdraw from, amount to transfer, account to deposit to
+    // Then process will not execute
     if (transactionDetails.size() < 4)
     {
         cerr << "Invalid transaction details for transfer." << endl;
@@ -27,11 +29,10 @@ TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
     else
     {
         // A0000000 Transfer 40 A0000001
+        //     0       1      2     3
         string withdrawAccount = transactionDetails[0];
         double amount = stod(transactionDetails[2]);
         string depositAccount = transactionDetails[3];
-
-        sleep(10);
         
         withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory); // This is the start of the transfer process
     }
@@ -50,15 +51,16 @@ string TransferTo::returnCurrentTimeAndDate()
 // This method withdraws the specified amount of money from the first account
 void TransferTo::withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory)
 {
-    //lock_guard<mutex> guard(mtx);
     mtx.lock();
     string filePath = "Accounts/" + withdrawAccount;
-    fstream withdrawAccountFile(filePath, ios::in | ios::out | ios::binary);
+    fstream withdrawAccountFile(filePath, ios::in | ios::out);
 
     if (!withdrawAccountFile.is_open())
     {
         cerr << "Account file " << withdrawAccount << " could not be opened for withdrawing." << endl;
+
         mtx.unlock();
+
         return;
     }
 
@@ -76,7 +78,9 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
         strcat((char *)sharedMemory, writeInLog);
 
         cerr << "Account file " << withdrawAccount << " has insufficient funds." << endl;
+
         mtx.unlock();
+
         return;
     }
     // If the account does have enough money, then we take that money out and call the deposit method
@@ -91,7 +95,6 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
         withdrawAccountFile.flush();
         withdrawAccountFile.close();
 
-        mtx.unlock();
         depositAmount(withdrawAccount, amount, depositAccount, sharedMemory); // Call deposit
     }
 }
@@ -99,10 +102,8 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
 // This method deposits the specified amount of money into the second account
 void TransferTo::depositAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory)
 {
-    //lock_guard<mutex> guard(mtx);
-    mtx.lock();
     string filePath = "Accounts/" + depositAccount;
-    fstream depositAccountFile(filePath, ios::in | ios::out | ios::binary);
+    fstream depositAccountFile(filePath, ios::in | ios::out);
 
     if (!depositAccountFile.is_open())
     {
@@ -110,7 +111,9 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Transfer " + withdrawAccount + " " + to_string(amount) + " " + depositAccount + " " + " FAILURE " + time + "\n";
         cerr << "Account file " << depositAccount << " could not be opened for deposit." << endl;
+        
         mtx.unlock();
+
         return;
     }
     else
@@ -125,7 +128,6 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
 
         depositAccountFile << fixed << setprecision(2) << currentBalance;
         depositAccountFile.flush();
-        depositAccountFile.close();
 
         // Log the successful process
         string time = returnCurrentTimeAndDate();
@@ -135,152 +137,5 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
 
         mtx.unlock();
     }
+    depositAccountFile.close();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// #include "TransferTo.h"
-// #include <fstream>
-// #include <iomanip>
-// #include <iostream>
-// #include <mutex>
-// #include <string>
-// #include <vector>
-
-// using namespace std;
-
-// mutex mtx;
-
-// TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
-
-//     if (transactionDetails.size() < 4)
-//     {
-//         cerr << "Invalid transaction details for transfer." << endl;
-//         return;
-//     }
-
-//     string withdrawAccount = transactionDetails[0];
-//     double amount = stod(transactionDetails[2]);
-//     string depositAccount = transactionDetails[3];
-
-//     sleep(10);
-
-//     transferAmount(withdrawAccount, amount, depositAccount);
-// }
-
-// void TransferTo::transferAmount(string withdrawAccount, double amount, string depositAccount) {
-
-//     lock_guard<mutex> guard(mtx);
-//     string filePath = "Accounts/" + withdrawAccount;
-
-//     fstream withdrawAccountFile(filePath, ios::in | ios::out | ios::binary);
-//     if (!withdrawAccountFile.is_open())
-//     {
-//         cerr << "Account " << withdrawAccount << " could not be opened for withdraw." << endl;
-//         return;
-//     }
-//     if (withdrawAccountBalance < amount)
-//     {
-//         withdrawAccountFile.close();
-//         cerr << withdrawAccount << " has insufficent funds for withdrawal." << endl;
-//         return;
-//     }
-
-
-
-//     double withdrawAccountBalance = 0.0;
-//     withdrawAccountFile >> withdrawAccountBalance;
-
-
-
-
-
-
-
-
-//     fstream depositAccountFile(filePath, ios::in | ios::out | ios::binary);
-//     if (!depositAccountFile.is_open())
-//     {
-//         withdrawAccountFile.close();
-//         cerr << "Account " << depositAccount << " could not be opened for deposit." << endl;
-//         return;
-//     }
-
-
-
-
-
-    
-
-//     double withdrawAccountBalance = 0.0;
-//     withdrawAccountFile >> withdrawAccountBalance;
-
-//     double depositAccountBalance = 0.0;
-//     depositAccountFile >> depositAccountBalance;
-
-//     if (withdrawAccountBalance < amount)
-//     {
-//         withdrawAccountFile.close();
-//         depositAccountFile.close();
-//         cerr << withdrawAccount << " has insufficent funds for withdrawal." << endl;
-//         return;
-//     }
-//     else
-//     {
-//         withdrawAccountBalance -= amount;
-//         depositAccountBalance += amount;
-
-//         withdrawAccountFile.clear();
-//         withdrawAccountFile.seekp(0, ios::beg);
-//         depositAccountFile.clear();
-//         depositAccountFile.seekp(0, ios::beg);
-
-//         withdrawAccountFile << withdrawAccountBalance;
-//         depositAccountFile << depositAccountBalance;
-
-//         withdrawAccountFile << fixed << setprecision(2) << withdrawAccountBalance;
-//         withdrawAccountFile.flush();
-//         depositAccountFile << fixed << setprecision(2) << depositAccountBalance;
-//         depositAccountFile.flush();
-
-//         if (withdrawAccountFile.fail() || depositAccountFile.fail())
-//         {
-//             cerr << "Failed to transfer " << amount << "from " << withdrawAccount << "to " << depositAccount << endl;
-//         }
-//         else
-//         {
-//             cout << "Transfer of " << amount << " from account " << withdrawAccount << " to account " << depositAccount << " successful." << endl;
-//             cout << "New balance of " << withdrawAccount << ": " << withdrawAccountBalance << endl;
-//             cout << "New balance of " << depositAccount << ": " << depositAccountBalance << endl;
-//         }
-//     }
-
-//     withdrawAccountFile.close();
-//     depositAccountFile.close();
-// }
