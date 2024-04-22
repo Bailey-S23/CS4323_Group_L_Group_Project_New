@@ -5,6 +5,7 @@
 // Description: This file moves money from account to another account
 
 #include "TransferTo.h"  // Include the header to get the class
+#include "Monitor.h"
 #include <iostream>
 #include <fstream>
 #include <mutex>
@@ -15,9 +16,11 @@
 #include <unistd.h>
 
 using namespace std;
-mutex TransferTo::mtx;
+//mutex TransferTo::mtx;
 
-TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
+TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory, Monitor& monitor)
+: monitor(monitor) {
+    monitor.acquire();
     // If input does not have all necessary values:
     // Account to withdraw from, amount to transfer, account to deposit to
     // Then process will not execute
@@ -35,6 +38,7 @@ TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
         string depositAccount = transactionDetails[3];
         
         withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory); // This is the start of the transfer process
+        monitor.release();
     }
 }
 
@@ -51,7 +55,7 @@ string TransferTo::returnCurrentTimeAndDate()
 // This method withdraws the specified amount of money from the first account
 void TransferTo::withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory)
 {
-    mtx.lock();
+    //mtx.lock();
     string filePath = "Accounts/" + withdrawAccount;
     fstream withdrawAccountFile(filePath, ios::in | ios::out);
 
@@ -59,7 +63,7 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
     {
         cerr << "Account file " << withdrawAccount << " could not be opened for withdrawing." << endl;
 
-        mtx.unlock();
+        //mtx.unlock();
 
         return;
     }
@@ -79,7 +83,7 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
 
         cerr << "Account file " << withdrawAccount << " has insufficient funds." << endl;
 
-        mtx.unlock();
+        //mtx.unlock();
 
         return;
     }
@@ -112,7 +116,7 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
         string writeToFile = "Transaction type: Transfer " + withdrawAccount + " " + to_string(amount) + " " + depositAccount + " " + " FAILURE " + time + "\n";
         cerr << "Account file " << depositAccount << " could not be opened for deposit." << endl;
         
-        mtx.unlock();
+        //mtx.unlock();
 
         return;
     }
@@ -135,7 +139,7 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
         char *writeInLog = writeToFile.data();
         strcat((char *)sharedMemory, writeInLog);
 
-        mtx.unlock();
+        //mtx.unlock();
     }
     depositAccountFile.close();
 }
