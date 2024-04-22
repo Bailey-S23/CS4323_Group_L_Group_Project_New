@@ -9,8 +9,9 @@
 
 using namespace std;
 
-Inquiry::Inquiry(const vector<string> &transactionDetails, void *sharedMemory)
+Inquiry::Inquiry(const vector<string> &transactionDetails, void *sharedMemory, Monitor& monitor)
 {
+    monitor.acquire();
     if (transactionDetails.size() < 1)
     {
         cerr << "Invalid transaction details for inquiry." << endl;
@@ -19,6 +20,7 @@ Inquiry::Inquiry(const vector<string> &transactionDetails, void *sharedMemory)
 
     string accountNumber = transactionDetails[0];
     inquireBalance(accountNumber, sharedMemory); // Now correctly declared in Inquiry.h
+    monitor.release();
 }
 
 /************************************* BELOW THIS LINE ADDED FOR SHARED MEMORY *************************************/

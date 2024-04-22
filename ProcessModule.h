@@ -31,7 +31,7 @@ public:
     ProcessModule(vector<UserAccounts> accounts, int processCount);
 
 private:
-    void createProcesses(vector<UserAccounts> accounts, int processCount, void* sharedMemory, Monitor& monitor); //add monitor
+    void createProcesses(vector<UserAccounts> accounts, int processCount, void *sharedMemory, Monitor &monitor);
 };
 
 #endif

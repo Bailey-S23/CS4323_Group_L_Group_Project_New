@@ -75,7 +75,7 @@ bool SharedMemoryMod::accExistsMem(string accountNumber)
 }
 
 // Handle operations from input file
-void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, void *sharedMemory)
+void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, void *sharedMemory, Monitor& monitor)
 {
 
     for (int i = 0; i < account.operations.size(); i++)
@@ -131,13 +131,13 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         case 2:
         {
             // add code for inquiry class
-            Inquiry(partsOfLine, sharedMemory);
+            Inquiry(partsOfLine, sharedMemory, monitor);
             break;
         }
         case 3:
         {
             // add code for deposit class
-            Deposit(partsOfLine, sharedMemory);
+            Deposit(partsOfLine, sharedMemory, monitor);
             break;
         }
         case 4:
@@ -158,15 +158,15 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
 
 // Create shared memory for semaphores and files, and spawns child processes
 // Needs to be updated. Does not control syncronization
-void SharedMemoryMod::createMem(UserAccounts account, int processCount, void *sharedMemory)
+void SharedMemoryMod::createMem(UserAccounts account, int processCount, void *sharedMemory, Monitor &monitor)
 {
 
     // shared memory ID
-    operationsMem(account, processCount, sharedMemory);
+    operationsMem(account, processCount, sharedMemory, monitor);
 }
 
 // Constructor, calls create memory with user accounts from driver
-SharedMemoryMod::SharedMemoryMod(UserAccounts account, int processCount, void *sharedMemory)
+SharedMemoryMod::SharedMemoryMod(UserAccounts account, int processCount, void *sharedMemory, Monitor &monitor)
 {
-    createMem(account, processCount, sharedMemory);
+    createMem(account, processCount, sharedMemory, monitor);
 }

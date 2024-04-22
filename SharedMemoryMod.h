@@ -27,6 +27,8 @@
 #include "Withdraw.h"
 #include "CloseAccount.h"
 #include "TransferTo.h"
+#include "Monitor.h"
+
 
 using namespace std;
 
@@ -39,12 +41,12 @@ the other classes like CreateAccount, Withdraw, etc should be called from.
 class SharedMemoryMod
 {
 public:
-    SharedMemoryMod(UserAccounts accountForProcess, int processCount, void* sharedMemory);
+    SharedMemoryMod(UserAccounts accountForProcess, int processCount, void *sharedMemory, Monitor &monitor);
     void *createSharedMem(size_t size);
     vector<string> tokenizeLine(string lineOfFile);
     bool accExistsMem(string accNum);
-    void operationsMem(UserAccounts account, int processAccount, void* sharedMemory);
-    void createMem(UserAccounts account, int processCount, void* sharedMemory);
+    void operationsMem(UserAccounts account, int processAccount, void *sharedMemory, Monitor &monitor);
+    void createMem(UserAccounts account, int processCount, void *sharedMemory, Monitor &monitor);
 };
 
 #endif

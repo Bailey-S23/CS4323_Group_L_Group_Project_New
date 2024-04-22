@@ -8,11 +8,12 @@
 
 #include <string>
 #include <vector>
+#include "Monitor.h"
 
 class Inquiry
 {
 public:
-    Inquiry(const std::vector<std::string> &transactionDetails, void *sharedMemory);
+    Inquiry(const std::vector<std::string> &transactionDetails, void *sharedMemory, Monitor &monitor);
 
 private:
     void inquireBalance(const std::string accNum, void *sharedMemory); // Declaration of the private member function
