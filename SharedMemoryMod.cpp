@@ -1,3 +1,8 @@
+// Group L
+// Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
+
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/mman.h>
@@ -112,6 +117,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
             command = 5;
         }
 
+// Execute transactions based on transaction type
         switch (command)
         {
         case 0:
@@ -149,9 +155,11 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         case 5:
         {
             CloseAccount(partsOfLine, sharedMemory, monitor);
-
             break;
         }
+
+        default:
+            break;
         }
     }
 }

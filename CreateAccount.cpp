@@ -1,5 +1,7 @@
+// Group L
 // Author: Bailey Schultz
-
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
 #include "CreateAccount.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>

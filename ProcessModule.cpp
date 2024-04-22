@@ -1,4 +1,8 @@
+// Group L
 // Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
+
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/mman.h>
@@ -15,73 +19,38 @@
 #include "Monitor.cpp"
 
 using namespace std;
-/*
-void ProcessModule::createProcesses(vector<UserAccounts> accounts, int processCount, void *sharedMemory)
-{
-    pid_t pid;
-    // Create child process, one for each account
-    for (int k = 0; k < processCount; k++)
-    {
-        pid = fork();
-        if (pid == 0)
-        {
-            UserAccounts account = accounts[k];
-            SharedMemoryMod(account, processCount, sharedMemory);
-            break;
-        }
-    }
-
-    for (int i = 0; i < processCount; i++)
-    {
-        wait(NULL);
-    }
-
-    if (pid != 0)
-    {
-        char *readInMemMod = (char *)sharedMemory;
-
-        cout << "This line read in ProcessModule: \n" << readInMemMod << endl;
-    }
-}*/
 
 void ProcessModule::createProcesses(vector<UserAccounts> accounts, int processCount, void *sharedMemory, Monitor &monitor)
 { // add monitory
     pid_t pid;
-    // pid_t pid = getpid();
-    // kill(pid, SIGTERM);
+
     for (int k = 0; k < processCount; k++)
     {
+        // Spawn Child Processes
         pid = fork();
         if (pid == 0)
         {
             // Child process
             UserAccounts account = accounts[k];
             SharedMemoryMod(account, processCount, sharedMemory, monitor);
-            pid_t pid = getpid();
-            kill(pid, SIGTERM);
+            break;
         }
     }
 
+    // Wait for Child Proccess
     for (int i = 0; i < processCount; i++)
     {
         wait(NULL);
     }
 
+    // Print out log
     if (pid != 0)
     { // Parent process
         char *readInMemMod = (char *)sharedMemory;
-        cout << "This line read in ProcessModule: \n"
+        cout << "Transaction Log: \n"
              << readInMemMod << endl;
     }
 }
-
-// Constructor, calls create memory with user accounts from driver
-/*ProcessModule::ProcessModule(vector<UserAccounts> accounts, int processCount)
-{
-    void *sharedMemory = mmap(NULL, 1024, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
-
-    createProcesses(accounts, processCount, sharedMemory);
-}*/
 
 ProcessModule::ProcessModule(vector<UserAccounts> accounts, int processCount)
 {

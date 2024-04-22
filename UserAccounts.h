@@ -1,4 +1,7 @@
+// Group L
 // Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
 
 #ifndef USERACCOUNTS_H
 #define USERACCOUNTS_H
@@ -14,11 +17,12 @@
 
 using namespace std;
 
+// Class to represent a user
 class UserAccounts
 {
     public:
         string accountNumber;
-        vector<vector<string>> operationVector;
+        vector<vector<string>> operationVector; // *NOT USED*
         vector<string> operations;
         UserAccounts(string accountNumber);
 };

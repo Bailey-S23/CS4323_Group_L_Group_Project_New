@@ -1,4 +1,7 @@
+// Group L
 // Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
 
 #include "UserAccounts.h"
 #include <sys/ipc.h>
@@ -11,6 +14,7 @@
 
 using namespace std;
 
+// Constructor for User Account
 UserAccounts::UserAccounts(string x)
 {
     accountNumber = x;

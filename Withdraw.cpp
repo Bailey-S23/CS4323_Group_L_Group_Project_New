@@ -73,6 +73,7 @@ void Withdraw::WithdrawAmount(string accNum, double amount, void *sharedMemory)
     accountFile.clear();
     accountFile.seekp(0, ios::beg);
 
+
     if (currentBalance < amount)
     {
         // Log the failed process

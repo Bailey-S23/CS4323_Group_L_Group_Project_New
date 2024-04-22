@@ -1,3 +1,8 @@
+// Group L
+// Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
+
 #ifndef READFILE_H
 #define READFILE_H
 
@@ -21,6 +26,7 @@
 
 using namespace std;
 
+// Class header for ReadFile
 class ReadFile
 {
 public:

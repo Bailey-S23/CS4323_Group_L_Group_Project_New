@@ -1,4 +1,7 @@
+// Group L
 // Author: Bailey Schultz
+// Email: Bailey.Schultz@okstate.edu
+// 4/21/2024
 
 #ifndef CREATEACCOUNT_H
 #define CREATEACCOUNT_H

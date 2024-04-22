@@ -19,11 +19,16 @@
 
 using namespace std;
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-
     string inputFileName = "InputFile";
-    ReadFile fileToRead = ReadFile(inputFileName);
 
-    return 0;
+    if (argc == 2)
+    {
+        string fileToRead = argv[1]; // Use the command-line argument for the input file name
+    }
+    else
+    {
+        ReadFile sendToReadFile = ReadFile(inputFileName);
+    }
 }
