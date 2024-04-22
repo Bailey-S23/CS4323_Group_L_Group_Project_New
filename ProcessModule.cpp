@@ -53,8 +53,6 @@ void ProcessModule::createProcesses(vector<UserAccounts> accounts, int processCo
         if (pid == 0) { 
             // Child process
             monitor.acquire();
-             pid_t pid = getpid();
-             kill(pid, SIGTERM);
             UserAccounts account = accounts[k];
             SharedMemoryMod(account, processCount, sharedMemory);
             monitor.release();
