@@ -18,8 +18,14 @@
 #include "TransferTo.h"
 #include "TransferTo.cpp"
 #include "SharedMemoryMod.h"
+#include "Monitor.h"
 
 using namespace std;
+
+const char* MUTEX_NAME = "/myMutexName";
+const char* COND_VAR_NAME = "/myCondVarName";
+
+Monitor monitor(MUTEX_NAME, COND_VAR_NAME);
 
 void *SharedMemoryMod::createSharedMem(size_t size)
 {
@@ -80,6 +86,7 @@ bool SharedMemoryMod::accExistsMem(string accountNumber)
 // Handle operations from input file
 void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, void *sharedMemory)
 {
+   
 
     for (int i = 0; i < account.operations.size(); i++)
     {
@@ -127,7 +134,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         {
             if (!accExistsMem(partsOfLine[0]))
             {
-                CreateAccount(partsOfLine, sharedMemory);
+                CreateAccount(partsOfLine, sharedMemory, monitor); //add monitor
             }
             break;
         }
@@ -140,7 +147,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         case 3:
         {
             // add code for deposit class
-            Deposit(partsOfLine, sharedMemory);
+            Deposit(partsOfLine, sharedMemory, monitor); //add monitor
             break;
         }
         case 4:

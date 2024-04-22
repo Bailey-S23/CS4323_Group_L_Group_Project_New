@@ -13,7 +13,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-
+#include "Monitor.h"
 /*
 CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
 {
@@ -82,8 +82,10 @@ string CreateAccount::returnCurrentTimeAndDate()
 }
 
 // Constructor that creates new account files
-CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
-{
+CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory, Monitor& monitor)
+: monitor(monitor){
+    
+    monitor.acquire();
 
     accBalance = stoi(accountInfo[2].data());
     string accName = accountInfo[0];
@@ -120,5 +122,7 @@ CreateAccount::CreateAccount(vector<string> accountInfo, void *sharedMemory)
         char *writeInLog = writeToFile.data();
 
         strcat((char *)sharedMemory, writeInLog);
+
+        monitor.release();
     }
 }

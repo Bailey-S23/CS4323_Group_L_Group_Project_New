@@ -10,12 +10,17 @@
 #include <vector>
 #include <string>
 #include <iomanip> 
+#include "Monitor.h"
+#include <iomanip>
+#include <ctime>
+#include <cstring>
 
 using namespace std;
 
-mutex Deposit::mtx;
+//mutex Deposit::mtx;
 
-Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory) {
+Deposit::Deposit(vector<string> transactionDetails, void* sharedMemory, Monitor& monitor) 
+: monitor(monitor) {
     if (transactionDetails.size() < 3) {
         cerr << "Invalid transaction details for deposit." << endl;
         return;
@@ -39,7 +44,8 @@ string Deposit::returnCurrentTimeAndDate()
 
 
 void Deposit::depositAmount(string accNum, double amount, void* sharedMemory) {
-    lock_guard<mutex> guard(mtx);  // Ensures thread-safe access
+    //lock_guard<mutex> guard(mtx);  // Ensures thread-safe access
+    monitor.acquire();
 
     string filePath = "Accounts/" + accNum;
     fstream accountFile(filePath, ios::in | ios::out);
@@ -90,4 +96,6 @@ void Deposit::depositAmount(string accNum, double amount, void* sharedMemory) {
     }
 
     accountFile.close();  // Ensure the file is closed after operations
+
+    monitor.release();
 }

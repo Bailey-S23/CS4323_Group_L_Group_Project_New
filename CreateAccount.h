@@ -11,6 +11,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "Monitor.h"
+
 
 
 using namespace std;
@@ -19,12 +21,14 @@ class CreateAccount
 {
 
 public:
-    string accName;
+    std::string accName;
     int accBalance;
+    Monitor& monitor;
     // CreateAccount(vector<string> accountInfo, void* sharedMemory);
-    CreateAccount(vector<string> accountInfo, void* sharedMemory);
+    CreateAccount(vector<string> accountInfo, void* sharedMemory, Monitor& monitor);
     bool accExists(string accountName);
-    string returnCurrentTimeAndDate();
+    
+    std::string returnCurrentTimeAndDate();
 };
 
 #endif
