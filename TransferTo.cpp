@@ -4,10 +4,7 @@
 // 4/21/2024
 // Description: This file moves money from account to another account
 
-// forks must be used and they must run in parrallel
-// add sleep() function of at least 10 seconds
-
-#include "TransferTo.h"  // Include the header to get the class definition
+#include "TransferTo.h"  // Include the header to get the class
 #include <iostream>
 #include <fstream>
 #include <mutex>
@@ -18,8 +15,7 @@
 #include <unistd.h>
 
 using namespace std;
-
-mutex mtx;
+mutex TransferTo::mtx;
 
 TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
 
@@ -30,13 +26,14 @@ TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
     }
     else
     {
+        // A0000000 Transfer 40 A0000001
         string withdrawAccount = transactionDetails[0];
         double amount = stod(transactionDetails[2]);
         string depositAccount = transactionDetails[3];
 
         sleep(10);
-
-        withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory);
+        
+        withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory); // This is the start of the transfer process
     }
 }
 
@@ -50,23 +47,28 @@ string TransferTo::returnCurrentTimeAndDate()
     return ss.str();
 }
 
+// This method withdraws the specified amount of money from the first account
 void TransferTo::withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory)
 {
-    lock_guard<mutex> guard(mtx);
+    //lock_guard<mutex> guard(mtx);
+    mtx.lock();
     string filePath = "Accounts/" + withdrawAccount;
     fstream withdrawAccountFile(filePath, ios::in | ios::out | ios::binary);
 
     if (!withdrawAccountFile.is_open())
     {
         cerr << "Account file " << withdrawAccount << " could not be opened for withdrawing." << endl;
+        mtx.unlock();
         return;
     }
 
     double currentBalance = 0.0;
-    withdrawAccountFile >> currentBalance;
+    withdrawAccountFile >> currentBalance; // currentBalance now represents the value of the account
 
+    // If account does not have enough money, then we cannot transfer any money
     if (currentBalance < amount)
     {
+        // Log the failed process
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Transfer " + withdrawAccount + " " + to_string(amount) + " " + depositAccount + " FAILURE " + time + "\n";
         char *readInCreate = (char *)sharedMemory;
@@ -74,34 +76,41 @@ void TransferTo::withdrawAmount(string withdrawAccount, double amount, string de
         strcat((char *)sharedMemory, writeInLog);
 
         cerr << "Account file " << withdrawAccount << " has insufficient funds." << endl;
+        mtx.unlock();
         return;
     }
+    // If the account does have enough money, then we take that money out and call the deposit method
     else
     {
         withdrawAccountFile.clear();
         withdrawAccountFile.seekp(0, ios::beg);
 
-        currentBalance -= amount;
+        currentBalance -= amount; // Subtract the specified amount from the account
 
         withdrawAccountFile << fixed << setprecision(2) << currentBalance;
         withdrawAccountFile.flush();
         withdrawAccountFile.close();
 
-        depositAmount(withdrawAccount, amount, depositAccount, sharedMemory);
+        mtx.unlock();
+        depositAmount(withdrawAccount, amount, depositAccount, sharedMemory); // Call deposit
     }
 }
 
+// This method deposits the specified amount of money into the second account
 void TransferTo::depositAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory)
 {
-    lock_guard<mutex> guard(mtx);
+    //lock_guard<mutex> guard(mtx);
+    mtx.lock();
     string filePath = "Accounts/" + depositAccount;
     fstream depositAccountFile(filePath, ios::in | ios::out | ios::binary);
 
     if (!depositAccountFile.is_open())
     {
+        // Log the failed process
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Transfer " + withdrawAccount + " " + to_string(amount) + " " + depositAccount + " " + " FAILURE " + time + "\n";
         cerr << "Account file " << depositAccount << " could not be opened for deposit." << endl;
+        mtx.unlock();
         return;
     }
     else
@@ -112,16 +121,19 @@ void TransferTo::depositAmount(string withdrawAccount, double amount, string dep
         depositAccountFile.clear(); 
         depositAccountFile.seekp(0, ios::beg);
 
-        currentBalance += amount;
+        currentBalance += amount; // Add the specified amount to the account
 
         depositAccountFile << fixed << setprecision(2) << currentBalance;
         depositAccountFile.flush();
         depositAccountFile.close();
 
+        // Log the successful process
         string time = returnCurrentTimeAndDate();
         string writeToFile = "Transaction type: Transfer " + withdrawAccount + " " + to_string(amount) + " " + depositAccount + " " + " SUCCESS " + time + "\n";
         char *writeInLog = writeToFile.data();
         strcat((char *)sharedMemory, writeInLog);
+
+        mtx.unlock();
     }
 }
 

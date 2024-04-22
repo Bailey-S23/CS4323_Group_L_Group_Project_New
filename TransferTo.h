@@ -17,6 +17,7 @@ public:
     TransferTo(vector<string> transactionDetails, void* sharedMemory);
 
 private:
+    static mutex mtx;
     void withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
     void depositAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
     string returnCurrentTimeAndDate();
