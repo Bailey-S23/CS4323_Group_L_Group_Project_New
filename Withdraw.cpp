@@ -67,10 +67,25 @@ void Withdraw::WithdrawAmount(string accNum, double amount, void *sharedMemory)
     }
 
     double currentBalance = 0.0;
+
     accountFile >> currentBalance;
 
     accountFile.clear();
     accountFile.seekp(0, ios::beg);
+
+    if (currentBalance < amount)
+    {
+        // Log the failed process
+        string time = returnCurrentTimeAndDate();
+        string writeToFile = "Transaction type: Withdraw " + accNum + " " + to_string(amount) + " FAILURE " + time + "\n";
+        char *readInCreate = (char *)sharedMemory;
+        char *writeInLog = writeToFile.data();
+        strcat((char *)sharedMemory, writeInLog);
+
+        cerr << "Account file " << accNum << " has insufficient funds." << endl;
+
+        return;
+    }
 
     currentBalance -= amount;
 
@@ -100,6 +115,4 @@ void Withdraw::WithdrawAmount(string accNum, double amount, void *sharedMemory)
     }
 
     accountFile.close();
-
-    
 }

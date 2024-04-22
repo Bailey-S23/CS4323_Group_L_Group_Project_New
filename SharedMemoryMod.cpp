@@ -143,7 +143,7 @@ void SharedMemoryMod::operationsMem(UserAccounts account, int processAccount, vo
         case 4:
         {
             // add code for transfer class
-            TransferTo(partsOfLine, sharedMemory);
+            TransferTo(partsOfLine, sharedMemory, monitor);
             break;
         }
         case 5:
