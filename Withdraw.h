@@ -1,22 +1,22 @@
-// Author: Katie Pinell
-// Date: 4/14/2024
-// Description: This is the header file for Withdraw.cpp
-// Withdraw.cpp withdraws a given amount from an account.
+/* Author Name: Katie Pinell
+    Email: katie.pinell@okstate.edu
+    Date: 04/21/2024
+   Withdraw header file holding Withdraw class definition */
 
-#ifndef TRANSFER_H
-#define TRANSFER_H
+#ifndef WITHDRAW_H
+#define WITHDRAW_H
 
 #include <vector>
 #include <string>
 
-using namespace std;
-
 class Withdraw {
 public:
-    Withdraw(vector<string> transactionDetails, void* sharedMemory);
+    Withdraw(std::vector<std::string> transactionDetails, void* sharedMemory);
 
 private:
-    void WithdrawAmount(string withdrawAccount, double amount);
+    void WithdrawAmount(std::string accNum, double amount, void* sharedMemory);
+    static mutex mtx;
+    string returnCurrentTimeAndDate();
 };
 
 #endif
