@@ -14,8 +14,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <fcntl.h>
-
-
 #include "ReadFile.h"
 #include "ReadFile.cpp"
 
