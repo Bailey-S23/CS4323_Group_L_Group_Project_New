@@ -64,13 +64,10 @@ bool SharedMemoryMod::accExistsMem(string accountNumber)
 
     if (file)
     {
-        cout << "File " + accountNumber + " exists" << endl;
         exists = true;
     }
     else
     {
-        cout << "File " + accountNumber + " does not exist" << endl;
-
         exists = false;
     }
 

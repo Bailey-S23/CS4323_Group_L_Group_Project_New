@@ -40,44 +40,53 @@ vector<string> ReadFile::tokenize(string lineOfFile)
     return partsOfLine;
 }
 
-// This function checks to see if a file exists or not
+// This function checks to see if a file exists or not, returns true if exists, false otherwise
 bool ReadFile::accountExists(string accNum)
 {
 
+    // ifsteam to open file
     ifstream file;
 
+    // attempt to open file
     file.open("Accounts/" + accNum);
 
+    // bool returned
     bool exists = false;
 
     if (file)
     {
+        // set true if file exists
         exists = true;
     }
     else
     {
+        // false otherwise
         exists = false;
     }
 
+    // return if file exists
     return exists;
 }
 
+// This function checks for an account in the vector that holds all user accounts from input
 int ReadFile::checkForAccountInVector(vector<UserAccounts> accountVector, string accountName)
 {
+    // loop through current account vector
     for (int i = 0; i < accountVector.size(); i++)
     {
+        // if name is found in vector, return location of account in vector
         if (accountName == accountVector[i].accountNumber)
         {
             return i;
         }
     }
+    // no account found, return -1
     return -1;
 }
 
+// constructor to read the input file and create an array of users and their respective transactions
 ReadFile::ReadFile(string fileToRead)
 {
-
-    cout << fileToRead << endl;
 
     // This block of code creates the directory "Accounts" if it does not exist already
     //.................................................................................
@@ -100,63 +109,71 @@ ReadFile::ReadFile(string fileToRead)
     }
     //.................................................................................
 
-    // used to read file
+    // ifstream and string to read file, attempt to open file passed from driver
     ifstream inputFile(fileToRead);
     string lineOfFile;
 
+    // holds number of users from top of input file
     int numOfUsers;
 
+    // vector to hold all user accounts
     vector<UserAccounts> accountVector;
 
     // if file is open
     if (inputFile.is_open())
     {
-        // Get int value at top of input file
-        cout << "Start" << endl;
+        // indicate when file reading begins
+        cout << "Begin reading file" << endl;
 
+        // Get int value at top of input file
         getline(inputFile, lineOfFile);
 
+        // hold number of accounts expected
         numOfUsers = stoi(lineOfFile);
 
         // read lines of file one at a time until they are all read
         while (getline(inputFile, lineOfFile))
         {
 
-            // take each line of the file break it into its pieces
+            // take each line of the file break it into its pieces using helper function tokenize
             vector<string> partsOfLine;
             partsOfLine = tokenize(lineOfFile);
 
-            // Create accounts and add operations for each account into vector associated with that account
+            // if vector is empty, place first account in vector
             if (accountVector.empty() == true)
             {
-                UserAccounts newAccount = UserAccounts(partsOfLine[0]);
-                newAccount.operationVector.push_back(partsOfLine);
-                newAccount.operations.push_back(lineOfFile);
-                accountVector.push_back(newAccount);
+
+                UserAccounts newAccount = UserAccounts(partsOfLine[0]); // create new account
+                newAccount.operationVector.push_back(partsOfLine);      // add operations to vector of vectors *THIS IS NEVER USED*
+                newAccount.operations.push_back(lineOfFile);            // add transaction to vector attached to user account
+                accountVector.push_back(newAccount);                    // add new user to account vector
             }
+            // if user has account in account vector add transactions to that accounts operations vector
             else if (checkForAccountInVector(accountVector, partsOfLine[0]) != -1)
             {
-                int i = checkForAccountInVector(accountVector, partsOfLine[0]);
-
-                accountVector[i].operationVector.push_back(partsOfLine);
-                accountVector[i].operations.push_back(lineOfFile);
+                int i = checkForAccountInVector(accountVector, partsOfLine[0]); // access correct account in UserAccounts vector
+                accountVector[i].operationVector.push_back(partsOfLine);        // *NEVER USED*
+                accountVector[i].operations.push_back(lineOfFile);              // add transaction to vector attached to user account
             }
+            // vector is not empty, but user account does not exist
             else
             {
-                UserAccounts newAccount2 = UserAccounts(partsOfLine[0]);
-                newAccount2.operationVector.push_back(partsOfLine);
-                newAccount2.operations.push_back(lineOfFile);
-                accountVector.push_back(newAccount2);
+                UserAccounts newAccount2 = UserAccounts(partsOfLine[0]); // create new account
+                newAccount2.operationVector.push_back(partsOfLine);      // *NEVER USED**
+                newAccount2.operations.push_back(lineOfFile);            // add transaction to vector attached to user account
+                accountVector.push_back(newAccount2);                    // add new user to account vector
             }
         }
     }
+    // Opening file failed, exit the program
     else
     {
         cerr << "Failed to open file: " << fileToRead << endl;
         exit(-1);
     }
 
-    cout << numOfUsers << endl;
+    pid_t pid = getpid();
+    kill(pid, SIGTERM);
 
     // Pass user accounts and number of user accounts to memoryModule
     ProcessModule processes = ProcessModule(accountVector, numOfUsers);
