@@ -1,5 +1,7 @@
-// Author: Caleb Sullard
-// Date: 4/14/2024
+// Group L
+// Caleb Sullard
+// caleb.sullard@okstate.edu
+// 4/21/2024
 // Description: This is the header file for TransferTo.cpp
 // TransferTo.cpp moves money from account to another account
 
@@ -15,8 +17,9 @@ public:
     TransferTo(vector<string> transactionDetails, void* sharedMemory);
 
 private:
-    int withdrawAmount(string account, double amount);
-    int depositAmount(string account, double amount);
+    void withdrawAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
+    void depositAmount(string withdrawAccount, double amount, string depositAccount, void* sharedMemory);
+    string returnCurrentTimeAndDate();
 };
 
 #endif
