@@ -34,9 +34,9 @@ TransferTo::TransferTo(vector<string> transactionDetails, void* sharedMemory) {
         double amount = stod(transactionDetails[2]);
         string depositAccount = transactionDetails[3];
 
-    sleep(10);
+        sleep(10);
 
-    withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory);
+        withdrawAmount(withdrawAccount, amount, depositAccount, sharedMemory);
     }
 }
 
